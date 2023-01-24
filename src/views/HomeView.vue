@@ -7,6 +7,8 @@ import ApodImage from '../components/ApodImage.vue';
     <h2>Hellow</h2>
     <Suspense>
       <ApodImage />
+
+      <template #fallback> Loading... </template>
     </Suspense>
   </main>
 </template>
