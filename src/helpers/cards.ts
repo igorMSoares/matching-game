@@ -69,13 +69,16 @@ const matchHandler = () => {
   clearSelectedCards();
 };
 
-const cardSelectionHandler = async (card: HTMLElement) => {
+const getCardIndex = (elementId: string) =>
+  elementId.match(/\d+$/)?.at(0) ?? null;
+
+const cardSelectionHandler = (card: HTMLElement) => {
   if (
     card.tagName === 'IMG' ||
     card.getAttribute('selected-card') ||
     card.getAttribute('matched')
   )
-    return;
+    return null;
 
   showImage(card);
 
@@ -84,12 +87,17 @@ const cardSelectionHandler = async (card: HTMLElement) => {
     selectCard(card);
   } else if (totalCardsSelected === 1) {
     selectCard(card);
-    if (checkMatch(getCardKey(card))) matchHandler();
+    if (checkMatch(getCardKey(card))) {
+      matchHandler();
+      return parseInt(getCardIndex(card.id) ?? '');
+    }
   } else if (totalCardsSelected === 2) {
     hideVisibleCards();
     clearSelectedCards();
     selectCard(card);
   }
+
+  return null;
 };
 
 export { generateCards, cardSelectionHandler, generateCardKey };

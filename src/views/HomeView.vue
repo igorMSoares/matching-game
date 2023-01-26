@@ -4,7 +4,6 @@ import ApodImage from '../components/ApodImage.vue';
 
 <template>
   <main>
-    <h2>Hellow</h2>
     <Suspense>
       <ApodImage />
 
