@@ -21,7 +21,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   const count = Number(req.query.count ?? 10);
   try {
     const apiRes = await api.get(
-      `/apod?${APOD_KEY_NAME}=${APOD_API_KEY}&count=${1.5 * count}`
+      `/apod?${APOD_KEY_NAME}=${APOD_API_KEY}&count=${Math.floor(1.5 * count)}`
     );
     const images = apiRes.data
       .filter((data: APODImg) => data.media_type === 'image')
@@ -29,6 +29,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     res.status(200);
     return res.json(images);
   } catch (error) {
-    return res.json({ error: error });
+    return res.json({ error: error.message });
   }
 };
