@@ -23,7 +23,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     const apiRes = await api.get(
       `/apod?${APOD_KEY_NAME}=${APOD_API_KEY}&count=${Math.floor(1.5 * count)}`
     );
-    const images = apiRes.data
+    const images: APODImg[] = apiRes.data
       .filter((data: APODImg) => data.media_type === 'image')
       .slice(0, count);
     res.status(200);

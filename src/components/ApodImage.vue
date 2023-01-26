@@ -1,62 +1,23 @@
 <script setup lang="ts">
-import axios from 'axios';
 import { ref } from 'vue';
-import { readFromCache, writeToCache } from '../helpers/cache';
-import { shuffleArray } from '../helpers/shuffle';
+import { getImages, API_ROUTE } from '../helpers/getCardImages';
+import {
+  generateCards,
+  generateCardKey,
+  cardSelectionHandler,
+} from '../helpers/cards';
 
-const API_ROUTE = Object.freeze('/api/getImages');
 const err: { message: string } = { message: '' };
 
-const getImages = async (url = API_ROUTE): Promise<APODImg[]> => {
-  let images = readFromCache(url) as APODImg[];
-  if (images) return images;
-
-  try {
-    const apiRes = await axios.get(url);
-    images = apiRes.data;
-
-    if ('error' in images) {
-      err.message = images.error as string;
-      return [];
-    }
-
-    if (images) {
-      writeToCache(url, images);
-      return images;
-    }
-  } catch (error: any) {
-    err.message = error.message;
-  }
-  return [];
-};
-
-const generateCards = (images: APODImg[]): APODImg[] => {
-  const cards: APODImg[] = Array(imagesCount.value * 2);
-
-  let cardIndex = 0;
-  for (let i = 0; i < imagesCount.value; i++) {
-    cards[cardIndex] = images[i];
-    cards[++cardIndex] = images[i];
-    cardIndex++;
-  }
-
-  return cards;
-};
-
 const imagesCount = ref(10);
-const images = await getImages(API_ROUTE + `?count=${imagesCount.value}`);
+const images = await getImages(`${API_ROUTE}?count=${imagesCount.value}`);
 
-const cards = generateCards(images);
-shuffleArray(cards);
+let cards: APODImg[];
 
-const showImage = (card: HTMLElement) => {
-  const cardImage = card.firstChild as HTMLElement;
-  cardImage.classList.toggle('hidden');
-};
-
-const hideImage = (image: HTMLElement) => {
-  image.classList.toggle('hidden');
-};
+if (images instanceof Error) err.message = images.message;
+else {
+  cards = generateCards(images, imagesCount.value);
+}
 </script>
 
 <template>
@@ -66,18 +27,16 @@ const hideImage = (image: HTMLElement) => {
       again soon.
     </p>
   </div>
-  <div class="grid">
+  <div v-if="cards !== undefined" class="grid">
     <div
-      v-if="err.message === ''"
-      v-for="image in cards"
-      :key="image.title.replace(/\s/g, '-').substring(0, 25)"
-      class="card"
-      @click.stop="(e) => showImage(e.target as HTMLElement)"
-      ria-role="button"
+      v-for="(image, i) in cards"
+      :id="generateCardKey(image) + `_${i}`"
+      class="card gradient-background"
+      @click.stop="(e) => cardSelectionHandler(e.target as HTMLElement)"
+      aria-role="button"
     >
       <img
         v-if="image.media_type === 'image'"
-        @click.stop="(e) => hideImage(e.target as HTMLElement)"
         class="hidden"
         :src="image.url"
         :alt="image.title"
@@ -88,12 +47,7 @@ const hideImage = (image: HTMLElement) => {
 </template>
 
 <style scoped>
-* {
-  --square-min-side: 5.75rem;
-  --square-side: clamp(var(--square-min-side), 30%, 13rem);
-}
-
-img {
+.card > img {
   width: 100%;
   height: 100%;
 }
@@ -110,9 +64,21 @@ img {
     rgba(57, 214, 154, 1) 0%,
     rgba(60, 3, 48, 1) 78%
   );
+  overflow: hidden;
+}
+
+.card[matched] {
+  cursor: default;
+  background: transparent;
+}
+
+.card[selected-card] {
+  cursor: default;
 }
 
 .grid {
+  --square-min-side: 5.75rem;
+  --square-side: clamp(var(--square-min-side), 30%, 13rem);
   gap: 0.75rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, var(--square-side));
