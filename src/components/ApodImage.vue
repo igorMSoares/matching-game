@@ -14,6 +14,12 @@ const getImages = async (url = API_ROUTE): Promise<APODImg[]> => {
   try {
     const apiRes = await axios.get(url);
     images = apiRes.data;
+
+    if ('error' in images) {
+      err.message = images.error as string;
+      return [];
+    }
+
     if (images) {
       writeToCache(url, images);
       return images;
@@ -24,9 +30,24 @@ const getImages = async (url = API_ROUTE): Promise<APODImg[]> => {
   return [];
 };
 
-const imagesCount = ref(18);
+const generateCards = (images: APODImg[]): APODImg[] => {
+  const cards: APODImg[] = Array(imagesCount.value * 2);
+
+  let cardIndex = 0;
+  for (let i = 0; i < imagesCount.value; i++) {
+    cards[cardIndex] = images[i];
+    cards[++cardIndex] = images[i];
+    cardIndex++;
+  }
+
+  return cards;
+};
+
+const imagesCount = ref(10);
 const images = await getImages(API_ROUTE + `?count=${imagesCount.value}`);
-shuffleArray(images);
+
+const cards = generateCards(images);
+shuffleArray(cards);
 
 const showImage = (card: HTMLElement) => {
   const cardImage = card.firstChild as HTMLElement;
@@ -48,7 +69,7 @@ const hideImage = (image: HTMLElement) => {
   <div class="grid">
     <div
       v-if="err.message === ''"
-      v-for="image in images"
+      v-for="image in cards"
       :key="image.title.replace(/\s/g, '-').substring(0, 25)"
       class="card"
       @click.stop="(e) => showImage(e.target as HTMLElement)"
@@ -68,7 +89,8 @@ const hideImage = (image: HTMLElement) => {
 
 <style scoped>
 * {
-  --square-side: clamp(6.25rem, 20vw, 12rem);
+  --square-min-side: 5.75rem;
+  --square-side: clamp(var(--square-min-side), 30%, 13rem);
 }
 
 img {
@@ -79,6 +101,7 @@ img {
 .card {
   user-select: none;
   cursor: pointer;
+  width: 100%;
   height: 100%;
   aspect-ratio: 1;
   background: rgb(57, 214, 154);
@@ -92,8 +115,8 @@ img {
 .grid {
   gap: 0.75rem;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--square-side), 1fr));
-  grid-auto-rows: var(--square-side);
+  grid-template-columns: repeat(auto-fill, var(--square-side));
+  grid-auto-rows: minmax(var(--square-min-side), var(--square-side));
   justify-items: center;
 }
 
