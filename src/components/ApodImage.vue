@@ -24,10 +24,6 @@ const getImages = async (url = API_ROUTE): Promise<APODImg[]> => {
 };
 
 const imagesCount = ref(18);
-const gridRowsNumber = ref(3);
-const gridColumnsNumber = computed(() =>
-  Math.floor(imagesCount.value / gridRowsNumber.value)
-);
 const images = await getImages(API_ROUTE + `?count=${imagesCount.value}`);
 </script>
 
@@ -56,18 +52,21 @@ const images = await getImages(API_ROUTE + `?count=${imagesCount.value}`);
 </template>
 
 <style scoped>
+* {
+  --square-side: clamp(6.25rem, 20vw, 12rem);
+}
 img {
   width: 100%;
   height: 100%;
 }
 .card {
-  /* aspect-ratio: 1; */
+  aspect-ratio: 1;
 }
 .grid {
-  gap: 0.5em;
+  gap: 0.75rem;
   display: grid;
-  grid-template-columns: repeat(v-bind(gridColumnsNumber), 1fr);
-  grid-template-rows: repeat(v-bind(gridRowsNumber), 1fr);
-  justify-content: center;
+  grid-template-columns: repeat(auto-fill, minmax(var(--square-side), 1fr));
+  grid-auto-rows: var(--square-side);
+  justify-items: center;
 }
 </style>
