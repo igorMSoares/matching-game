@@ -25,6 +25,15 @@ const getImages = async (url = API_ROUTE): Promise<APODImg[]> => {
 
 const imagesCount = ref(18);
 const images = await getImages(API_ROUTE + `?count=${imagesCount.value}`);
+
+const showImage = (card: HTMLElement) => {
+  const cardImage = card.firstChild as HTMLElement;
+  cardImage.classList.toggle('hidden');
+};
+
+const hideImage = (image: HTMLElement) => {
+  image.classList.toggle('hidden');
+};
 </script>
 
 <template>
@@ -40,9 +49,13 @@ const images = await getImages(API_ROUTE + `?count=${imagesCount.value}`);
       v-for="image in images"
       :key="image.title.replace(/\s/g, '-').substring(0, 25)"
       class="card"
+      @click.stop="(e) => showImage(e.target as HTMLElement)"
+      ria-role="button"
     >
       <img
         v-if="image.media_type === 'image'"
+        @click.stop="(e) => hideImage(e.target as HTMLElement)"
+        class="hidden"
         :src="image.url"
         :alt="image.title"
         :title="image.title"
@@ -55,18 +68,34 @@ const images = await getImages(API_ROUTE + `?count=${imagesCount.value}`);
 * {
   --square-side: clamp(6.25rem, 20vw, 12rem);
 }
+
 img {
   width: 100%;
   height: 100%;
 }
+
 .card {
+  user-select: none;
+  cursor: pointer;
+  height: 100%;
   aspect-ratio: 1;
+  background: rgb(57, 214, 154);
+  background: linear-gradient(
+    324deg,
+    rgba(57, 214, 154, 1) 0%,
+    rgba(60, 3, 48, 1) 78%
+  );
 }
+
 .grid {
   gap: 0.75rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--square-side), 1fr));
   grid-auto-rows: var(--square-side);
   justify-items: center;
+}
+
+.hidden {
+  display: none;
 }
 </style>
