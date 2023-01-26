@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import axios from 'axios';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { readFromCache, writeToCache } from '../helpers/cache';
+import { shuffleArray } from '../helpers/shuffle';
 
 const API_ROUTE = Object.freeze('/api/getImages');
 const err: { message: string } = { message: '' };
@@ -25,6 +26,7 @@ const getImages = async (url = API_ROUTE): Promise<APODImg[]> => {
 
 const imagesCount = ref(18);
 const images = await getImages(API_ROUTE + `?count=${imagesCount.value}`);
+shuffleArray(images);
 
 const showImage = (card: HTMLElement) => {
   const cardImage = card.firstChild as HTMLElement;
