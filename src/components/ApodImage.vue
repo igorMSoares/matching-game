@@ -1,21 +1,23 @@
 <script setup lang="ts">
 import type { Ref } from 'vue';
 import { ref } from 'vue';
-import { getImages, API_ROUTE } from '../helpers/getCardImages';
 import {
   generateCards,
   generateCardKey,
   cardSelectionHandler,
 } from '../helpers/cards';
+import { useCardImagesStore } from '@/stores/cardImages';
 
-const imagesCount = ref(10);
+const imagesCount = ref(5);
+
+const cardImagesStore = useCardImagesStore();
 
 let cards: APODImg[];
 let err: string | null = null;
 
 try {
-  const images = await getImages(`${API_ROUTE}?count=${imagesCount.value}`);
-  cards = generateCards(images, imagesCount.value);
+  await cardImagesStore.fetchImages(imagesCount.value);
+  cards = generateCards(cardImagesStore.images, imagesCount.value);
 } catch (error) {
   const DEFAULT_ERROR_MSG = 'Error while fetching from the APOD API';
   err = error instanceof Error ? error.message : DEFAULT_ERROR_MSG;
