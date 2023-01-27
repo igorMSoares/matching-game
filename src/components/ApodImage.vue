@@ -8,18 +8,20 @@ import {
   cardSelectionHandler,
 } from '../helpers/cards';
 
-const err: { message: string } = { message: '' };
-
 const imagesCount = ref(10);
-const images = await getImages(`${API_ROUTE}?count=${imagesCount.value}`);
 
 let cards: APODImg[];
-const matchedImage: Ref<APODImg | null> = ref(null);
+let err: string | null = null;
 
-if (images instanceof Error) err.message = images.message;
-else {
+try {
+  const images = await getImages(`${API_ROUTE}?count=${imagesCount.value}`);
   cards = generateCards(images, imagesCount.value);
+} catch (error) {
+  const DEFAULT_ERROR_MSG = 'Error while fetching from the APOD API';
+  err = error instanceof Error ? error.message : DEFAULT_ERROR_MSG;
 }
+
+const matchedImage: Ref<APODImg | null> = ref(null);
 
 const cardClickHandler = (card: HTMLElement) => {
   const matchedImageId = cardSelectionHandler(card);
@@ -28,7 +30,7 @@ const cardClickHandler = (card: HTMLElement) => {
 </script>
 
 <template>
-  <div v-if="err.message !== ''">
+  <div v-if="err">
     <p>
       Sorry, a problem has occurred while fetching images from Nasa. Please try
       again soon.

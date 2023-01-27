@@ -3,23 +3,19 @@ import { readFromCache, writeToCache } from './cache';
 
 const API_ROUTE = Object.freeze('/api/getApodImages');
 
-const getImages = async (url = API_ROUTE): Promise<APODImg[] | Error> => {
+const getImages = async (url = API_ROUTE) => {
   let images = readFromCache(url) as APODImg[] | null;
   if (images) return images;
 
-  try {
-    const apiRes = await axios.get(url);
-    images = apiRes.data as APODImg[];
+  const apiRes = await axios.get(url);
 
-    if ('error' in images) {
-      return new Error(images.error as string);
-    }
-
-    writeToCache(url, images);
-    return images;
-  } catch (error: any) {
-    return new Error(error.message);
+  if ('error' in apiRes.data) {
+    throw new Error(apiRes.data.error as string);
   }
+
+  images = apiRes.data as APODImg[];
+  writeToCache(url, images);
+  return images;
 };
 
 export { getImages, API_ROUTE };
