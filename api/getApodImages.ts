@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const { APOD_BASE_URL, APOD_KEY_NAME, APOD_API_KEY } = process.env;
 
-type APODImg = {
+type APODData = {
   date: string;
   explanation: string;
   hdurl: string;
@@ -13,9 +13,31 @@ type APODImg = {
   url: string;
 };
 
+interface APODImg extends APODData {
+  media_type: 'image';
+}
+
 const api = axios.create({
   baseURL: APOD_BASE_URL,
 });
+
+const filterByMediaType = (
+  dataList: APODData[],
+  mediaType: 'image' | 'video',
+  maxCount: number | null = null
+) => {
+  const filteredData: APODData[] = [];
+  let totalImages = 0;
+
+  for (const data of dataList as APODData[]) {
+    if (data.media_type !== mediaType) continue;
+    filteredData.push(data);
+    totalImages++;
+    if (maxCount && totalImages === maxCount) break;
+  }
+
+  return filteredData;
+};
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const count = Number(req.query.count ?? 10);
@@ -23,12 +45,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     const apiRes = await api.get(
       `/apod?${APOD_KEY_NAME}=${APOD_API_KEY}&count=${Math.floor(1.5 * count)}`
     );
-    const images: APODImg[] = apiRes.data
-      .filter((data: APODImg) => data.media_type === 'image')
-      .slice(0, count);
+
+    const images = filterByMediaType(apiRes.data, 'image', count) as APODImg[];
+
     res.status(200);
     return res.json(images);
   } catch (error) {
-    return res.json({ error: error.message });
+    res.status(error.status);
+    return res.json(error.message);
   }
 };

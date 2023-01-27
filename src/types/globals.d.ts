@@ -1,4 +1,4 @@
-type APODImg = {
+type APODData = {
   date: string;
   explanation: string;
   hdurl: string;
@@ -7,3 +7,7 @@ type APODImg = {
   title: string;
   url: string;
 };
+
+interface APODImg extends APODData {
+  media_type: 'image';
+}
