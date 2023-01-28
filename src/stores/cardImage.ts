@@ -18,6 +18,18 @@ const fetchFromApi = async (url: string) => {
   return imgs;
 };
 
+const preloadImgs = (imgs: APODImg[]) => {
+  let preloadLink;
+  imgs.forEach((img) => {
+    preloadLink = document.createElement('link');
+    preloadLink.rel = 'preload';
+    preloadLink.as = 'image';
+    preloadLink.href = img.url;
+
+    document.getElementsByTagName('head')[0].appendChild(preloadLink);
+  });
+};
+
 export const useCardImageStore = defineStore('cardImageStore', () => {
   const images = ref<APODImg[]>([]);
 
@@ -29,6 +41,8 @@ export const useCardImageStore = defineStore('cardImageStore', () => {
       imgs = await fetchFromApi(url);
     }
 
+    preloadImgs(imgs);
+
     images.value = imgs;
   }
 
@@ -36,5 +50,19 @@ export const useCardImageStore = defineStore('cardImageStore', () => {
     images.value = await fetchFromApi(`${API_ROUTE}?count=${totalImages}`);
   }
 
-  return { images, fetchImages, reFetchImages };
+  function duplicateImages() {
+    const imagesCount = images.value.length;
+    const duplicates: APODImg[] = [];
+
+    let index = 0;
+    for (let i = 0; i < imagesCount; i++) {
+      duplicates[index] = images.value[i];
+      duplicates[++index] = images.value[i];
+      index++;
+    }
+
+    return duplicates;
+  }
+
+  return { images, fetchImages, reFetchImages, duplicateImages };
 });

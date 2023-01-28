@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
-import type { W } from 'vitest/dist/types-71ccd11d';
+
 import { computed, reactive, ref } from 'vue';
 import { useSelectedCardStore } from './selectedCard';
+import { useCardImageStore } from './cardImage';
+import { shuffleArray } from '@/helpers/shuffle';
 
 export const useCardDeckStore = defineStore('cardDeckStore', () => {
   const deck = ref<Card[]>([]);
@@ -51,8 +53,21 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
     matchedId.value = idCardA;
   }
 
+  const initCardDeck = async (imagesCount: number) => {
+    const cardImagesStore = useCardImageStore();
+
+    await cardImagesStore.fetchImages();
+
+    const allImages: APODImg[] = shuffleArray(
+      cardImagesStore.duplicateImages()
+    );
+
+    allImages.forEach((img) => addCard(img));
+  };
+
   return {
     deck,
+    initCardDeck,
     totalCards,
     addCard,
     toggleSelection,
