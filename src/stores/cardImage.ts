@@ -1,7 +1,7 @@
-import { readFromCache, writeToCache } from '@/helpers/cache';
-import axios from 'axios';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import axios from 'axios';
+import { readFromCache, writeToCache } from '@/helpers/cache';
 
 const API_ROUTE = Object.freeze('/api/getApodImages');
 
@@ -18,7 +18,7 @@ const fetchFromApi = async (url: string) => {
   return imgs;
 };
 
-export const useCardImagesStore = defineStore('cardImagesStore', () => {
+export const useCardImageStore = defineStore('cardImageStore', () => {
   const images = ref<APODImg[]>([]);
 
   async function fetchImages(totalImages: number = 10) {

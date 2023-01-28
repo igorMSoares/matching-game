@@ -1,34 +1,43 @@
 <script setup lang="ts">
-import type { Ref } from 'vue';
 import { ref } from 'vue';
-import {
-  generateCards,
-  generateCardKey,
-  cardSelectionHandler,
-} from '../helpers/cards';
-import { useCardImagesStore } from '@/stores/cardImages';
+import { useCardImageStore } from '@/stores/cardImage';
+import { useCardDeckStore } from '@/stores/cardDeck';
+import { shuffleArray } from '@/helpers/shuffle';
 
-const imagesCount = ref(5);
+const imagesCount = ref(10);
 
-const cardImagesStore = useCardImagesStore();
+const cardImagesStore = useCardImageStore();
+const cardDeckStore = useCardDeckStore();
 
-let cards: APODImg[];
 let err: string | null = null;
+
+const duplicateImages = (images: APODImg[]) => {
+  const imagesCount = images.length;
+  const duplicates: APODImg[] = [];
+
+  let index = 0;
+  for (let i = 0; i < imagesCount; i++) {
+    duplicates[index] = images[i];
+    duplicates[++index] = images[i];
+    index++;
+  }
+
+  return duplicates;
+};
+
+const initCardDeck = (images: APODImg[]) => {
+  const allImages: APODImg[] = shuffleArray(duplicateImages(images));
+
+  allImages.forEach((img) => cardDeckStore.addCard(img));
+};
 
 try {
   await cardImagesStore.fetchImages(imagesCount.value);
-  cards = generateCards(cardImagesStore.images, imagesCount.value);
+  initCardDeck(cardImagesStore.images);
 } catch (error) {
   const DEFAULT_ERROR_MSG = 'Error while fetching from the APOD API';
   err = error instanceof Error ? error.message : DEFAULT_ERROR_MSG;
 }
-
-const matchedImage: Ref<APODImg | null> = ref(null);
-
-const cardClickHandler = (card: HTMLElement) => {
-  const matchedImageId = cardSelectionHandler(card);
-  if (matchedImageId !== null) matchedImage.value = cards[matchedImageId];
-};
 </script>
 
 <template>
@@ -38,27 +47,34 @@ const cardClickHandler = (card: HTMLElement) => {
       again soon.
     </p>
   </div>
-  <div v-if="matchedImage">
+  <div v-if="cardDeckStore.lastMatch">
     <div class="image-display">
-      <h2>{{ matchedImage.title }}</h2>
-      <img :src="matchedImage.url" :alt="matchedImage.title" />
-      <p>{{ matchedImage.explanation }}</p>
+      <h2>{{ cardDeckStore.lastMatch.image.title }}</h2>
+      <img
+        :src="cardDeckStore.lastMatch.image.url"
+        :alt="cardDeckStore.lastMatch.image.title"
+      />
+      <p>{{ cardDeckStore.lastMatch.image.explanation }}</p>
     </div>
   </div>
-  <div v-if="cards !== undefined" class="grid">
+  <div v-if="cardDeckStore.totalCards > 0" class="grid">
     <div
-      v-for="(image, i) in cards"
-      :id="generateCardKey(image) + `_${i}`"
-      class="card gradient-background"
-      @click.stop="(e) => cardClickHandler(e.target as HTMLElement)"
+      v-for="card in cardDeckStore.deck"
+      :id="card.key + `_${card.id}`"
+      class="card"
+      :class="{
+        'gradient-background': !card.foundMatch,
+        pointer: !card.isSelected && !card.foundMatch,
+      }"
+      @click.stop="cardDeckStore.selectCard(card.id)"
       aria-role="button"
     >
       <img
-        v-if="image.media_type === 'image'"
-        class="hidden"
-        :src="image.url"
-        :alt="image.title"
-        :title="image.title"
+        v-show="!card.foundMatch && card.isSelected"
+        :src="card.image.url"
+        :alt="card.image.title"
+        :title="card.image.title"
+        loading="lazy"
       />
     </div>
   </div>
@@ -72,26 +88,25 @@ const cardClickHandler = (card: HTMLElement) => {
 
 .card {
   user-select: none;
-  cursor: pointer;
+  cursor: default;
   width: 100%;
   height: 100%;
   aspect-ratio: 1;
+  background: transparent;
+  overflow: hidden;
+}
+
+.gradient-background {
   background: rgb(57, 214, 154);
   background: linear-gradient(
     324deg,
     rgba(57, 214, 154, 1) 0%,
     rgba(60, 3, 48, 1) 78%
   );
-  overflow: hidden;
 }
 
-.card[matched] {
-  cursor: default;
-  background: transparent;
-}
-
-.card[selected-card] {
-  cursor: default;
+.pointer {
+  cursor: pointer;
 }
 
 .grid {

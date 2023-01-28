@@ -1,4 +1,5 @@
-const shuffleArray = (array: Array<any>) => {
+const shuffleArray = (arr: Array<any>) => {
+  const array = [...arr];
   for (let currentIndex = array.length - 1; currentIndex > 0; currentIndex--) {
     const randomIndex = Math.floor(Math.random() * (currentIndex + 1));
     [array[currentIndex], array[randomIndex]] = [
@@ -6,6 +7,8 @@ const shuffleArray = (array: Array<any>) => {
       array[currentIndex],
     ];
   }
+
+  return array;
 };
 
 export { shuffleArray };

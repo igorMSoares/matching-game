@@ -11,3 +11,11 @@ type APODData = {
 interface APODImg extends APODData {
   media_type: 'image';
 }
+
+interface Card {
+  id: number;
+  image: APODImg;
+  key: string;
+  isSelected: boolean;
+  foundMatch: boolean;
+}
