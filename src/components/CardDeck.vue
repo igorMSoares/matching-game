@@ -21,20 +21,18 @@ const selectCard = (cardId: number) => cardDeckStore.selectCard(cardId);
 </script>
 
 <template>
-  <div v-if="cardDeckStore.totalCards > 0" class="deck">
-    <Card
-      v-for="card in cardDeckStore.deck"
-      :card="card"
-      @select-card="selectCard"
-    />
-  </div>
+  <v-row v-if="cardDeckStore.totalCards > 0" class="deck">
+    <v-col v-for="card in cardDeckStore.deck">
+      <Card :card="card" @select-card="selectCard" />
+    </v-col>
+  </v-row>
 </template>
 
 <style scoped>
 .deck {
   --square-min-side: 5.75rem;
   --square-side: clamp(var(--square-min-side), 30%, 13rem);
-  gap: 0.75rem;
+  /* gap: 0.75rem; */
   display: grid;
   grid-template-columns: repeat(auto-fill, var(--square-side));
   grid-auto-rows: minmax(var(--square-min-side), var(--square-side));

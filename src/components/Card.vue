@@ -6,7 +6,10 @@ const { card } = props;
 </script>
 
 <template>
-  <div
+  <v-card
+    v-if="!card.foundMatch"
+    :elevation="4"
+    :loading="true"
     :id="card.key + `_${card.id}`"
     class="card"
     :class="{
@@ -14,16 +17,18 @@ const { card } = props;
       pointer: !card.isSelected && !card.foundMatch,
     }"
     @click.stop="$emit('selectCard', card.id)"
-    aria-role="button"
+    role="button"
   >
-    <img
+    <v-img
       v-show="!card.foundMatch && card.isSelected"
       :src="card.image.url"
       :alt="card.image.title"
       :title="card.image.title"
+      :aspect-ratio="1"
+      cover
       loading="lazy"
     />
-  </div>
+  </v-card>
 </template>
 
 <style scoped>
