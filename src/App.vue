@@ -3,13 +3,13 @@ import { RouterView } from 'vue-router';
 </script>
 
 <template>
-  <v-app>
+  <v-app style="min-width: 20rem">
     <v-toolbar
       dark
       title="Matching Game"
       density="compact"
-      :elevation="4"
-      class="bg-teal-darken-1"
+      :elevation="2"
+      class="bg-blue-grey-darken-1"
     ></v-toolbar>
 
     <v-main>

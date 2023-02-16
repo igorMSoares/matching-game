@@ -31,14 +31,4 @@ const err = ref<string | null>(null);
   </main>
 </template>
 
-<style scoped>
-.image-display {
-  height: clamp(20rem, 100%, 25rem);
-  width: clamp(19rem, 80vw, 70%);
-  padding: 2rem 0;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
-    'Lucida Sans', Arial, sans-serif;
-  font-size: 1rem;
-  font-weight: bolder;
-}
-</style>
+<style scoped></style>
