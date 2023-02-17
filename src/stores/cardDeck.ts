@@ -16,6 +16,11 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
   const matchedId = ref(-1);
   const lastMatch = computed(() => getCard(matchedId.value));
 
+  const matchedCardsId = ref<number[]>([]);
+  const matchedCards = computed(() =>
+    matchedCardsId.value.map((cardId) => getCard(cardId))
+  );
+
   function addCard(image: APODImg) {
     const card: Card = reactive({
       id: deck.value.length,
@@ -51,6 +56,7 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
     deck.value[idCardB].foundMatch = true;
 
     matchedId.value = idCardA;
+    matchedCardsId.value.push(idCardA);
   }
 
   const initCardDeck = async (imagesCount: number) => {
@@ -74,5 +80,6 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
     selectCard,
     matchFound,
     lastMatch,
+    matchedCards,
   };
 });
