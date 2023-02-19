@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CardDeck from '../components/CardDeck.vue';
 import ImagesGallery from '../components/ImagesGallery.vue';
+import GalleryThumbs from '../components/GalleryThumbs.vue';
 
 import { ref } from 'vue';
 
@@ -19,6 +20,8 @@ const err = ref<string | null>(null);
     </div>
 
     <ImagesGallery />
+
+    <GalleryThumbs />
 
     <Suspense>
       <CardDeck
