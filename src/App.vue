@@ -3,7 +3,7 @@ import { RouterView } from 'vue-router';
 </script>
 
 <template>
-  <v-app style="min-width: 20rem">
+  <v-app class="app-min-width">
     <v-toolbar
       dark
       title="Matching Game"
@@ -18,4 +18,8 @@ import { RouterView } from 'vue-router';
   </v-app>
 </template>
 
-<style scoped></style>
+<style scoped>
+.app-min-width {
+  min-width: 23.5rem;
+}
+</style>
