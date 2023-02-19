@@ -13,7 +13,9 @@ const { image } = defineProps<{ image: APODImg }>();
     class="image-display d-flex flex-column justify-center align-center px-6 py-6 bg-blue-grey-lighten-5"
     :class="smAndDown ? 'pb-13' : ''"
   >
-    <v-card-title class="text-center">{{ image.title }}</v-card-title>
+    <v-card-title class="text-center pb-4"
+      ><h2>{{ image.title }}</h2></v-card-title
+    >
     <v-img :src="image.url" :alt="image.title" width="auto" class="image" />
     <v-card-text class="explanation text-justify overflow-x-auto pt-0 mt-4">
       <p>
