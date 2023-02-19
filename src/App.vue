@@ -13,7 +13,7 @@ import { RouterView } from 'vue-router';
     ></v-toolbar>
 
     <v-main>
-      <v-container><RouterView /></v-container
+      <v-container class="main-container"><RouterView /></v-container
     ></v-main>
   </v-app>
 </template>
@@ -21,5 +21,9 @@ import { RouterView } from 'vue-router';
 <style scoped>
 .app-min-width {
   min-width: 23.5rem;
+}
+
+.main-container {
+  max-width: 80rem;
 }
 </style>
