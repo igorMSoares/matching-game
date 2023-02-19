@@ -16,7 +16,13 @@ const { image } = defineProps<{ image: APODImg }>();
     <v-card-title class="text-center pb-4"
       ><h2>{{ image.title }}</h2></v-card-title
     >
-    <v-img :src="image.url" :alt="image.title" width="auto" class="image" />
+    <v-img
+      :src="image.url"
+      :alt="image.title"
+      width="auto"
+      class="image"
+      eager
+    />
     <v-card-text class="explanation text-justify overflow-x-auto pt-0 mt-4">
       <p>
         {{ image.explanation }}

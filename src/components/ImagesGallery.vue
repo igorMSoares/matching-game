@@ -13,14 +13,14 @@ const { mdAndUp } = useDisplay();
 
 <template>
   <v-carousel
-    v-if="cardDeckStore.matchedCards"
+    v-if="cardDeckStore.matchedCards.length > 0"
     class="mb-6 elevation-8"
-    height="auto"
     :show-arrows="'hover' && mdAndUp"
     hide-delimiter-background
     :hide-delimiters="mdAndUp"
     delimiter-icon="mdi-image"
     :model-value="lastMatch"
+    height="80vh"
   >
     <v-carousel-item
       v-for="matchedCard in cardDeckStore.matchedCards"
