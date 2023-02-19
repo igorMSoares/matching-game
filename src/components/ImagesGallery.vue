@@ -2,17 +2,24 @@
 import { computed } from 'vue';
 import ImageDetail from './ImageDetail.vue';
 import { useCardDeckStore } from '@/stores/cardDeck';
+import { useDisplay } from 'vuetify';
 
 const cardDeckStore = useCardDeckStore();
 
 const lastMatch = computed(() => cardDeckStore.lastMatch?.key);
+
+const { mdAndUp } = useDisplay();
 </script>
 
 <template>
   <v-carousel
     v-if="cardDeckStore.matchedCards"
+    class="mb-6 elevation-8"
     height="auto"
-    hide-delimiters
+    :show-arrows="'hover' && mdAndUp"
+    hide-delimiter-background
+    :hide-delimiters="mdAndUp"
+    delimiter-icon="mdi-image"
     :model-value="lastMatch"
   >
     <v-carousel-item

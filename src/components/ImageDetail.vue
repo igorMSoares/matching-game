@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
+import { useDisplay } from 'vuetify';
+
+const { smAndDown } = useDisplay();
 
 const { image } = defineProps<{ image: APODImg }>();
 </script>
@@ -7,9 +10,8 @@ const { image } = defineProps<{ image: APODImg }>();
 <template>
   <v-card
     v-if="image"
-    variant="elevated"
-    class="image-display d-flex flex-column justify-center align-center mb-6 px-6 py-6 bg-blue-grey-lighten-5"
-    :elevation="4"
+    class="image-display d-flex flex-column justify-center align-center px-6 py-6 bg-blue-grey-lighten-5"
+    :class="smAndDown ? 'pb-13' : ''"
   >
     <v-card-title class="text-center">{{ image.title }}</v-card-title>
     <v-img :src="image.url" :alt="image.title" width="auto" class="image" />
@@ -32,7 +34,7 @@ const { image } = defineProps<{ image: APODImg }>();
 }
 
 .explanation {
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 4vw, 1.25rem);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.25em;
   flex-grow: 0;
