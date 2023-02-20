@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { useCardDeckStore } from '@/stores/cardDeck';
+import { onUpdated, defineEmits } from 'vue';
 
 const cardDeckStore = useCardDeckStore();
+
+const emit = defineEmits(['selectCard']);
+
+onUpdated(() => emit('selectCard', cardDeckStore.lastMatch));
 </script>
 
 <template>
@@ -15,13 +20,16 @@ const cardDeckStore = useCardDeckStore();
         :key="card.key"
         cols="auto"
       >
-        <v-img
-          :src="card.image.url"
-          height="5rem"
-          width="5rem"
-          cover
-          class="rounded"
-        />
+        <v-btn class="pa-0" height="5rem" width="5rem">
+          <v-img
+            height="5rem"
+            width="5rem"
+            :src="card.image.url"
+            cover
+            class="rounded"
+            @click="$emit('selectCard', card)"
+          />
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>
