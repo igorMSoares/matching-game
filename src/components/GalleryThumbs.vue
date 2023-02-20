@@ -6,7 +6,9 @@ const cardDeckStore = useCardDeckStore();
 
 const emit = defineEmits(['selectCard']);
 
-onUpdated(() => emit('selectCard', cardDeckStore.lastMatch));
+onUpdated(() =>
+  emit('selectCard', cardDeckStore.lastMatch, { thumbnailClick: false })
+);
 </script>
 
 <template>

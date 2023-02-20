@@ -5,11 +5,11 @@ import GalleryThumbs from './GalleryThumbs.vue';
 
 const selectedCard = ref<Card | null>(null);
 
-const showDetails = ref<Boolean>(true);
+const showDetails = ref<Boolean>(false);
 
-const showCardImage = (card: Card) => {
+const showCardImage = (card: Card, opts = { thumbnailClick: true }) => {
   selectedCard.value = card;
-  if (!showDetails.value) showDetails.value = true;
+  if (!showDetails.value && opts.thumbnailClick) showDetails.value = true;
 };
 </script>
 
@@ -20,7 +20,7 @@ const showCardImage = (card: Card) => {
     @close-image-details="showDetails = false"
   />
 
-  <GalleryThumbs @selectCard="(card) => showCardImage(card)" />
+  <GalleryThumbs @selectCard="(card, opts) => showCardImage(card, opts)" />
 </template>
 
 <style scoped></style>

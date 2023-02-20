@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import ImageDetail from './ImageDetail.vue';
 import { useCardDeckStore } from '@/stores/cardDeck';
 import { useDisplay } from 'vuetify';
 
 const cardDeckStore = useCardDeckStore();
-
-const lastMatch = computed(() => cardDeckStore.lastMatch?.key);
 
 const { mdAndUp } = useDisplay();
 
@@ -22,7 +19,7 @@ const { selectedCard } = defineProps<{ selectedCard: Card | null }>();
       hide-delimiter-background
       :hide-delimiters="mdAndUp"
       delimiter-icon="mdi-image"
-      :model-value="selectedCard ? selectedCard.key : lastMatch"
+      :model-value="selectedCard?.key"
       height="80vh"
     >
       <v-btn
