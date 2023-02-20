@@ -34,7 +34,6 @@ const selectCard = (cardId: number) => cardDeckStore.selectCard(cardId);
   --square-side: clamp(var(--square-min-side), 30%, 13rem);
   display: grid;
   grid-template-columns: repeat(auto-fill, var(--square-side));
-  grid-auto-rows: minmax(var(--square-min-side), var(--square-side));
   justify-items: center;
 }
 </style>
