@@ -1,11 +1,28 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, defineEmits } from 'vue';
 import ImagesCarousel from './ImagesCarousel.vue';
 import GalleryThumbs from './GalleryThumbs.vue';
+import { useCardDeckStore } from '@/stores/cardDeck';
+
+const emit = defineEmits(['galleryError']);
+
+const { startGame, imagesCount } = defineProps<{
+  startGame: Boolean;
+  imagesCount: number;
+}>();
 
 const selectedCard = ref<Card | null>(null);
-
 const showDetails = ref<Boolean>(false);
+
+const cardDeckStore = useCardDeckStore();
+
+try {
+  await cardDeckStore.initCardDeck(imagesCount);
+} catch (error) {
+  const DEFAULT_ERROR_MSG = 'Error while fetching from the APOD API';
+  const errorMsg = error instanceof Error ? error.message : DEFAULT_ERROR_MSG;
+  emit('galleryError', errorMsg);
+}
 
 const showCardImage = (card: Card, opts = { thumbnailClick: true }) => {
   selectedCard.value = card;
@@ -20,7 +37,11 @@ const showCardImage = (card: Card, opts = { thumbnailClick: true }) => {
     @close-image-details="showDetails = false"
   />
 
-  <GalleryThumbs @selectCard="(card, opts) => showCardImage(card, opts)" />
+  <GalleryThumbs
+    :card-list="startGame ? cardDeckStore.matchedCards : cardDeckStore.cardList"
+    :thumbnail-size="startGame ? '5rem' : '15rem'"
+    @selectCard="(card, opts) => showCardImage(card, opts)"
+  />
 </template>
 
 <style scoped></style>

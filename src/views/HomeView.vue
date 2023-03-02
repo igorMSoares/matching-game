@@ -1,13 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import CardDeck from '../components/CardDeck.vue';
 import ImagesGallery from '../components/ImagesGallery.vue';
 
-import { ref } from 'vue';
-
+const err = ref<string | null>(null);
 const imagesCount = ref(10);
 const startGame = ref(false);
-
-const err = ref<string | null>(null);
 </script>
 
 <template>
@@ -19,18 +17,19 @@ const err = ref<string | null>(null);
       </p>
     </div>
 
-    <ImagesGallery />
-
     <Suspense>
-      <CardDeck
+      <ImagesGallery
+        :start-game="startGame"
         :images-count="imagesCount"
-        @deck-error="(error: string) => (err = error)"
+        @gallery-error="(error: string) => (err = error)"
       />
 
       <template #fallback>
-        <h3>Loading...</h3>
+        <h3>Loading Cards...</h3>
       </template>
     </Suspense>
+
+    <CardDeck v-if="startGame" :images-count="imagesCount" />
   </main>
 </template>
 
