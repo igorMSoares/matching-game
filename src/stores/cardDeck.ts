@@ -6,7 +6,8 @@ import { useCardImageStore } from './cardImage';
 import { shuffleArray } from '@/helpers/shuffle';
 
 export const useCardDeckStore = defineStore('cardDeckStore', () => {
-  const deck = ref<Card[]>([]);
+  const deck = ref<Card[]>([]); // stores duplicated cards for the game
+  const cardList = ref<Card[]>([]); // stores unique cards
 
   const getKey = (image: APODImg) =>
     image.title.replace(/\s/g, '-').substring(0, 25);
@@ -21,16 +22,17 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
     matchedCardsId.value.map((cardId) => getCard(cardId))
   );
 
-  function addCard(image: APODImg) {
+  function addCard(image: APODImg, opts = { addToList: false }) {
+    const destination = opts.addToList ? cardList.value : deck.value;
     const card: Card = reactive({
-      id: deck.value.length,
+      id: destination.length,
       image: image,
       key: getKey(image),
       isSelected: false,
       foundMatch: false,
     });
 
-    deck.value.push(card);
+    destination.push(card);
   }
 
   function getCard(id: number) {
@@ -64,6 +66,8 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
 
     await cardImagesStore.fetchImages();
 
+    cardImagesStore.images.forEach((img) => addCard(img, { addToList: true }));
+
     const allImages: APODImg[] = shuffleArray(
       cardImagesStore.duplicateImages()
     );
@@ -73,6 +77,7 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
 
   return {
     deck,
+    cardList,
     initCardDeck,
     totalCards,
     addCard,
