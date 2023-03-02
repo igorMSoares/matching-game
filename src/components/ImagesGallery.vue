@@ -14,6 +14,8 @@ const { startGame, imagesCount } = defineProps<{
 const selectedCard = ref<Card | null>(null);
 const showDetails = ref<Boolean>(false);
 
+const displayMsg = ref<Boolean | undefined>(false);
+
 const cardDeckStore = useCardDeckStore();
 
 try {
@@ -26,7 +28,8 @@ try {
 
 const showCardImage = (card: Card, opts = { thumbnailClick: true }) => {
   selectedCard.value = card;
-  if (!showDetails.value && opts.thumbnailClick) showDetails.value = true;
+  if (!startGame) displayMsg.value = true;
+  else if (!showDetails.value && opts.thumbnailClick) showDetails.value = true;
 };
 </script>
 
@@ -35,6 +38,14 @@ const showCardImage = (card: Card, opts = { thumbnailClick: true }) => {
     v-show="showDetails"
     :selected-card="selectedCard"
     @close-image-details="showDetails = false"
+  />
+
+  <v-alert
+    v-model="displayMsg"
+    type="info"
+    :text="'Start the game and find the match of this card to see its full image and description.'"
+    closable
+    class="w-75 mx-auto mb-5 text-center font-weight-medium text-subtitle-1"
   />
 
   <GalleryThumbs
