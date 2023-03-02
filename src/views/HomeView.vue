@@ -19,7 +19,7 @@ const err = ref<string | null>(null);
       </p>
     </div>
 
-    <ImagesGallery v-show="selectedCard" :selectedCard="selectedCard" />
+    <ImagesGallery />
 
     <Suspense>
       <CardDeck
