@@ -2,12 +2,15 @@
 import { useCardDeckStore } from '@/stores/cardDeck';
 import { onUpdated, defineEmits } from 'vue';
 
-const { thumbnailSize } = defineProps<{ thumbnailSize?: string }>();
+const emit = defineEmits(['selectCard']);
+
+const { cardList, thumbnailSize } = defineProps<{
+  cardList: Card[];
+  thumbnailSize: string;
+}>();
 const THUMB_SIZE_FALLBACK = '5rem';
 
 const cardDeckStore = useCardDeckStore();
-
-const emit = defineEmits(['selectCard']);
 
 onUpdated(() =>
   emit('selectCard', cardDeckStore.lastMatch, { thumbnailClick: false })
@@ -15,16 +18,9 @@ onUpdated(() =>
 </script>
 
 <template>
-  <v-container
-    v-if="cardDeckStore.matchedCards.length > 0"
-    class="elevation-8 rounded-lg mb-6 pa-0 bg-blue-grey-lighten-5"
-  >
+  <v-container class="elevation-8 rounded-lg mb-6 pa-0 bg-blue-grey-lighten-5">
     <v-row justify="center" class="pa-2" dense>
-      <v-col
-        v-for="card of cardDeckStore.matchedCards"
-        :key="card.key"
-        cols="auto"
-      >
+      <v-col v-for="card of cardList" :key="card.key" cols="auto">
         <v-btn
           class="pa-0"
           :height="thumbnailSize ?? THUMB_SIZE_FALLBACK"
