@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import CardDeck from '../components/CardDeck.vue';
 import ImagesGallery from '../components/ImagesGallery.vue';
-import GalleryThumbs from '../components/GalleryThumbs.vue';
 
 import { ref } from 'vue';
 
 const imagesCount = ref(10);
+const startGame = ref(false);
 
 const err = ref<string | null>(null);
 </script>
@@ -27,7 +27,9 @@ const err = ref<string | null>(null);
         @deck-error="(error: string) => (err = error)"
       />
 
-      <template #fallback> Loading... </template>
+      <template #fallback>
+        <h3>Loading...</h3>
+      </template>
     </Suspense>
   </main>
 </template>

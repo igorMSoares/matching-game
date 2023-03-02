@@ -10,7 +10,7 @@ const { imagesCount } = defineProps<{ imagesCount: number }>();
 const cardDeckStore = useCardDeckStore();
 
 try {
-  cardDeckStore.initCardDeck(imagesCount);
+  await cardDeckStore.initCardDeck(imagesCount);
 } catch (error) {
   const DEFAULT_ERROR_MSG = 'Error while fetching from the APOD API';
   const err = error instanceof Error ? error.message : DEFAULT_ERROR_MSG;
