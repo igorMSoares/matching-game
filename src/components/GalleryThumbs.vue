@@ -2,6 +2,9 @@
 import { useCardDeckStore } from '@/stores/cardDeck';
 import { onUpdated, defineEmits } from 'vue';
 
+const { thumbnailSize } = defineProps<{ thumbnailSize?: string }>();
+const THUMB_SIZE_FALLBACK = '5rem';
+
 const cardDeckStore = useCardDeckStore();
 
 const emit = defineEmits(['selectCard']);
@@ -22,10 +25,14 @@ onUpdated(() =>
         :key="card.key"
         cols="auto"
       >
-        <v-btn class="pa-0" height="5rem" width="5rem">
+        <v-btn
+          class="pa-0"
+          :height="thumbnailSize ?? THUMB_SIZE_FALLBACK"
+          :width="thumbnailSize ?? THUMB_SIZE_FALLBACK"
+        >
           <v-img
-            height="5rem"
-            width="5rem"
+            :height="thumbnailSize ?? THUMB_SIZE_FALLBACK"
+            :width="thumbnailSize ?? THUMB_SIZE_FALLBACK"
             :src="card.image.url"
             cover
             class="rounded"
