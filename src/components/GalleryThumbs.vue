@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCardDeckStore } from '@/stores/cardDeck';
-import { onUpdated, defineEmits } from 'vue';
+import { onUpdated } from 'vue';
 
 const emit = defineEmits(['selectCard']);
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
+import { ref } from 'vue';
 import ImagesCarousel from './ImagesCarousel.vue';
 import GalleryThumbs from './GalleryThumbs.vue';
 import { useCardDeckStore } from '@/stores/cardDeck';
