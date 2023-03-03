@@ -46,7 +46,7 @@ const showCardImage = (card: Card, opts = { thumbnailClick: true }) => {
       type="info"
       :text="'Start the game and find the match of this card to see its full image and description.'"
       closable
-      class="w-75 mx-auto mb-5 text-center font-weight-medium text-subtitle-1"
+      class="w-75 mx-auto my-5 text-center font-weight-medium text-subtitle-1"
     />
   </v-slide-y-transition>
 
