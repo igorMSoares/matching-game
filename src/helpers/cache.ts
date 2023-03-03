@@ -8,7 +8,7 @@ const readFromCache = (url: string): Object[] | null => {
     : null;
 };
 
-const writeToCache = (url: string, data: Object): Boolean => {
+const writeToCache = (url: string, data: Object): boolean => {
   try {
     sessionStorage.clear();
     sessionStorage.setItem(url, JSON.stringify(data));

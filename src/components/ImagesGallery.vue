@@ -7,14 +7,14 @@ import { useCardDeckStore } from '@/stores/cardDeck';
 const emit = defineEmits(['galleryError']);
 
 const { startGame, imagesCount } = defineProps<{
-  startGame: Boolean;
+  startGame: boolean;
   imagesCount: number;
 }>();
 
 const selectedCard = ref<Card | null>(null);
-const showDetails = ref<Boolean>(false);
+const showDetails = ref<boolean>(false);
 
-const displayMsg = ref<Boolean | undefined>(false);
+const displayMsg = ref<boolean>(false);
 
 const cardDeckStore = useCardDeckStore();
 
