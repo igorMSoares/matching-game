@@ -40,13 +40,15 @@ const showCardImage = (card: Card, opts = { thumbnailClick: true }) => {
     @close-image-details="showDetails = false"
   />
 
-  <v-alert
-    v-model="displayMsg"
-    type="info"
-    :text="'Start the game and find the match of this card to see its full image and description.'"
-    closable
-    class="w-75 mx-auto mb-5 text-center font-weight-medium text-subtitle-1"
-  />
+  <v-slide-y-transition>
+    <v-alert
+      v-model="displayMsg"
+      type="info"
+      :text="'Start the game and find the match of this card to see its full image and description.'"
+      closable
+      class="w-75 mx-auto mb-5 text-center font-weight-medium text-subtitle-1"
+    />
+  </v-slide-y-transition>
 
   <GalleryThumbs
     :card-list="startGame ? cardDeckStore.matchedCards : cardDeckStore.cardList"
