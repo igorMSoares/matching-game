@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import CardDeck from '../components/CardDeck.vue';
 import ImagesGallery from '../components/ImagesGallery.vue';
+import GameOptions from '../components/GameOptions.vue';
 
 const err = ref<string | null>(null);
 const imagesCount = ref(10);
@@ -18,6 +19,8 @@ const startGame = ref(false);
         </p>
       </v-alert>
     </v-slide-y-transition>
+
+    <GameOptions />
 
     <Suspense>
       <ImagesGallery
