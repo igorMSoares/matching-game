@@ -20,7 +20,7 @@ const startGame = ref(false);
       </v-alert>
     </v-slide-y-transition>
 
-    <GameOptions />
+    <GameOptions @start-game="startGame = true" v-if="!startGame" />
 
     <Suspense>
       <ImagesGallery
