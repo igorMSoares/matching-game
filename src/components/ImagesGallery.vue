@@ -13,7 +13,6 @@ const { startGame, imagesCount } = defineProps<{
 
 const selectedCard = ref<Card | null>(null);
 const showDetails = ref<boolean>(false);
-
 const displayMsg = ref<boolean>(false);
 
 const cardDeckStore = useCardDeckStore();
@@ -26,10 +25,10 @@ try {
   emit('galleryError', errorMsg);
 }
 
-const showCardImage = (card: Card, opts = { thumbnailClick: true }) => {
+const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
   selectedCard.value = card;
   if (!startGame) displayMsg.value = true;
-  else if (!showDetails.value && opts.thumbnailClick) showDetails.value = true;
+  if (!showDetails.value && opts.thumbnailClick) showDetails.value = true;
 };
 </script>
 
@@ -42,6 +41,7 @@ const showCardImage = (card: Card, opts = { thumbnailClick: true }) => {
 
   <v-slide-y-transition>
     <v-alert
+      v-if="!startGame"
       v-model="displayMsg"
       type="info"
       :text="'Start the game and find the match of this card to see its full image and description.'"
@@ -51,10 +51,11 @@ const showCardImage = (card: Card, opts = { thumbnailClick: true }) => {
   </v-slide-y-transition>
 
   <GalleryThumbs
+    v-show="(startGame && cardDeckStore.matchedCards.length > 0) || !startGame"
     :card-list="startGame ? cardDeckStore.matchedCards : cardDeckStore.cardList"
     :thumbnail-size="startGame ? '5rem' : '15rem'"
     :thumbnail-margins="startGame ? 1 : 3"
-    @selectCard="(card, opts) => showCardImage(card, opts)"
+    @select-card="(card, opts) => showCardImage(card, opts)"
     class="my-5"
   />
 </template>

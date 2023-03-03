@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCardDeckStore } from '@/stores/cardDeck';
-import { onUpdated } from 'vue';
+import { onBeforeUpdate } from 'vue';
 
 const emit = defineEmits(['selectCard']);
 
@@ -13,9 +13,13 @@ const THUMB_SIZE_FALLBACK = '5rem';
 
 const cardDeckStore = useCardDeckStore();
 
-onUpdated(() =>
-  emit('selectCard', cardDeckStore.lastMatch, { thumbnailClick: false })
-);
+let lastMatch: Card | null = null;
+onBeforeUpdate(() => {
+  if (lastMatch && cardDeckStore.lastMatch !== lastMatch) {
+    emit('selectCard', cardDeckStore.lastMatch, { thumbnailClick: false });
+  }
+  lastMatch = cardDeckStore.lastMatch;
+});
 </script>
 
 <template>
@@ -41,7 +45,7 @@ onUpdated(() =>
                 :src="card.image.url"
                 cover
                 class="rounded"
-                @click="$emit('selectCard', card)"
+                @click="$emit('selectCard', card, { thumbnailClick: true })"
               />
             </v-btn>
           </v-card>
