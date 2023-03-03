@@ -10,12 +10,12 @@ const startGame = ref(false);
 
 <template>
   <main>
-    <div v-if="err">
+    <v-alert type="error" closable>
       <p>
         Sorry, a problem has occurred while fetching images from Nasa. Please
         try again soon.
       </p>
-    </div>
+    </v-alert>
 
     <Suspense>
       <ImagesGallery

@@ -55,6 +55,7 @@ const showCardImage = (card: Card, opts = { thumbnailClick: true }) => {
     :thumbnail-size="startGame ? '5rem' : '15rem'"
     :thumbnail-margins="startGame ? 1 : 3"
     @selectCard="(card, opts) => showCardImage(card, opts)"
+    class="my-5"
   />
 </template>
 
