@@ -13,8 +13,15 @@ import { RouterView } from 'vue-router';
     ></v-toolbar>
 
     <v-main>
-      <v-container class="main-container"><RouterView /></v-container
-    ></v-main>
+      <v-container class="main-container">
+        <Suspense>
+          <RouterView />
+          <template #fallback>
+            <h3>Loading Cards...</h3>
+          </template>
+        </Suspense>
+      </v-container></v-main
+    >
   </v-app>
 </template>
 

@@ -2,28 +2,15 @@
 import { ref } from 'vue';
 import ImagesCarousel from './ImagesCarousel.vue';
 import GalleryThumbs from './GalleryThumbs.vue';
-import { useCardDeckStore } from '@/stores/cardDeck';
 
-const emit = defineEmits(['galleryError']);
-
-const { startGame, imagesCount } = defineProps<{
+const { startGame } = defineProps<{
   startGame: boolean;
-  imagesCount: number;
+  cardList: Card[];
 }>();
 
 const selectedCard = ref<Card | null>(null);
 const showDetails = ref<boolean>(false);
 const displayMsg = ref<boolean>(false);
-
-const cardDeckStore = useCardDeckStore();
-
-try {
-  await cardDeckStore.initCardDeck(imagesCount);
-} catch (error) {
-  const DEFAULT_ERROR_MSG = 'Error while fetching from the APOD API';
-  const errorMsg = error instanceof Error ? error.message : DEFAULT_ERROR_MSG;
-  emit('galleryError', errorMsg);
-}
 
 const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
   selectedCard.value = card;
@@ -51,8 +38,8 @@ const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
   </v-slide-y-transition>
 
   <GalleryThumbs
-    v-show="(startGame && cardDeckStore.matchedCards.length > 0) || !startGame"
-    :card-list="startGame ? cardDeckStore.matchedCards : cardDeckStore.cardList"
+    v-show="cardList.length > 0"
+    :card-list="cardList"
     :thumbnail-size="startGame ? '5rem' : '15rem'"
     :thumbnail-margins="startGame ? 1 : 3"
     @select-card="(card, opts) => showCardImage(card, opts)"

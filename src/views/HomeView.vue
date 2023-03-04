@@ -3,10 +3,20 @@ import { ref } from 'vue';
 import CardDeck from '../components/CardDeck.vue';
 import ImagesGallery from '../components/ImagesGallery.vue';
 import GameOptions from '../components/GameOptions.vue';
+import { useCardDeckStore } from '@/stores/cardDeck';
 
 const err = ref<string | null>(null);
 const imagesCount = ref(10);
 const startGame = ref(false);
+
+const cardDeckStore = useCardDeckStore();
+
+try {
+  await cardDeckStore.initCardDeck(imagesCount.value);
+} catch (error) {
+  const DEFAULT_ERROR_MSG = 'Error while fetching from the APOD API';
+  err.value = error instanceof Error ? error.message : DEFAULT_ERROR_MSG;
+}
 </script>
 
 <template>
@@ -22,17 +32,12 @@ const startGame = ref(false);
 
     <GameOptions @start-game="startGame = true" v-if="!startGame" />
 
-    <Suspense>
-      <ImagesGallery
-        :start-game="startGame"
-        :images-count="imagesCount"
-        @gallery-error="(error: string) => (err = error)"
-      />
-
-      <template #fallback>
-        <h3>Loading Cards...</h3>
-      </template>
-    </Suspense>
+    <ImagesGallery
+      :start-game="startGame"
+      :card-list="
+        startGame ? cardDeckStore.matchedCards : cardDeckStore.cardList
+      "
+    />
 
     <CardDeck v-if="startGame" :images-count="imagesCount" />
   </main>
