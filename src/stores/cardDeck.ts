@@ -61,10 +61,17 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
     matchedCardsId.value.push(idCardA);
   }
 
+  const clearStore = () => {
+    deck.value = [];
+    cardList.value = [];
+  };
+
   const initCardDeck = async (imagesCount: number) => {
     const cardImagesStore = useCardImageStore();
 
     await cardImagesStore.fetchImages();
+
+    clearStore();
 
     cardImagesStore.images.forEach((img) => addCard(img, { addToList: true }));
 
