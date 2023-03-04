@@ -50,8 +50,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
     res.status(200);
     return res.json(images);
-  } catch (error) {
-    res.status(error.status);
-    return res.json(error.message);
+  } catch (_) {
+    res.status(500);
+    return res.json('Could not fetch images from Nasa API');
   }
 };

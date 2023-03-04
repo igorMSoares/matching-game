@@ -6,16 +6,19 @@ import { readFromCache, writeToCache } from '@/helpers/cache';
 const API_ROUTE = Object.freeze('/api/getApodImages');
 
 const fetchFromApi = async (url: string) => {
-  const apiRes = await axios.get(url);
+  try {
+    const apiRes = await axios.get(url);
+    if ('error' in apiRes.data) {
+      throw new Error(apiRes.data.error as string);
+    }
 
-  if ('error' in apiRes.data) {
-    throw new Error(apiRes.data.error as string);
+    const imgs = apiRes.data as APODImg[];
+    writeToCache(url, imgs);
+
+    return imgs;
+  } catch (error) {
+    throw new Error(error as string);
   }
-
-  const imgs = apiRes.data as APODImg[];
-  writeToCache(url, imgs);
-
-  return imgs;
 };
 
 const preloadImgs = (imgs: APODImg[]) => {
