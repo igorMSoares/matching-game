@@ -15,8 +15,11 @@ const displayMsg = ref<boolean>(false);
 
 const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
   selectedCard.value = card;
-  if (!gameStarted.value) displayMsg.value = true;
-  else if (!showDetails.value && opts.thumbnailClick) showDetails.value = true;
+  if (!gameStarted.value) {
+    displayMsg.value = true;
+    setTimeout(() => (displayMsg.value = false), 3500);
+  } else if (!showDetails.value && opts.thumbnailClick)
+    showDetails.value = true;
 };
 </script>
 

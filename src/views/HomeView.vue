@@ -82,17 +82,6 @@ const cardList = computed(() =>
     />
     <Loading v-else-if="!err" />
 
-    <!-- <v-alert
-      v-else-if="!err"
-      text="Loading images from outter space..."
-      icon="mdi-alien-outline"
-      variant="text"
-      class="w-50 my-5 mx-auto"
-      prominent
-    >
-      <v-progress-linear indeterminate :height="6"></v-progress-linear>
-    </v-alert> -->
-
     <CardDeck v-if="gameStarted" :images-count="imagesCount" />
 
     <GameOptions
