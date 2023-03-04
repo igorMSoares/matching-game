@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, toRefs } from 'vue';
 import ImagesCarousel from './ImagesCarousel.vue';
 import GalleryThumbs from './GalleryThumbs.vue';
 
-const { startGame } = defineProps<{
-  startGame: boolean;
+const props = defineProps<{
+  gameStarted: boolean;
   cardList: Card[];
 }>();
 
+const { gameStarted, cardList } = toRefs(props);
 const selectedCard = ref<Card | null>(null);
 const showDetails = ref<boolean>(false);
 const displayMsg = ref<boolean>(false);
 
 const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
   selectedCard.value = card;
-  if (!startGame) displayMsg.value = true;
+  if (!gameStarted.value) displayMsg.value = true;
   if (!showDetails.value && opts.thumbnailClick) showDetails.value = true;
 };
 </script>
@@ -28,7 +29,7 @@ const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
 
   <v-slide-y-transition>
     <v-alert
-      v-if="!startGame"
+      v-if="!gameStarted"
       v-model="displayMsg"
       type="info"
       :text="'Start the game and find the match of this card to see its full image and description.'"
@@ -40,8 +41,8 @@ const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
   <GalleryThumbs
     v-show="cardList.length > 0"
     :card-list="cardList"
-    :thumbnail-size="startGame ? '5rem' : '15rem'"
-    :thumbnail-margins="startGame ? 1 : 3"
+    :thumbnail-size="gameStarted ? '5rem' : '15rem'"
+    :thumbnail-margins="gameStarted ? 1 : 3"
     @select-card="(card, opts) => showCardImage(card, opts)"
     class="my-5"
   />

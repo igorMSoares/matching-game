@@ -1,22 +1,40 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import CardDeck from '../components/CardDeck.vue';
 import ImagesGallery from '../components/ImagesGallery.vue';
 import GameOptions from '../components/GameOptions.vue';
 import { useCardDeckStore } from '@/stores/cardDeck';
+import { useCardImageStore } from '@/stores/cardImage';
 
 const err = ref<string | null>(null);
 const imagesCount = ref(10);
-const startGame = ref(false);
+const gameStarted = ref(false);
 
 const cardDeckStore = useCardDeckStore();
 
-try {
-  await cardDeckStore.initCardDeck(imagesCount.value);
-} catch (error) {
-  const DEFAULT_ERROR_MSG = 'Error while fetching from the APOD API';
-  err.value = error instanceof Error ? error.message : DEFAULT_ERROR_MSG;
+if (cardDeckStore.totalCards === 0) {
+  try {
+    await cardDeckStore.initCardDeck(imagesCount.value);
+  } catch (error) {
+    const DEFAULT_ERROR_MSG = 'Error while fetching from the APOD API';
+    err.value = error instanceof Error ? error.message : DEFAULT_ERROR_MSG;
+  }
 }
+
+const startGame = () => {
+  gameStarted.value = true;
+};
+
+const refetchImages = async () => {
+  const cardImageStore = useCardImageStore();
+
+  await cardImageStore.reFetchImages();
+  cardDeckStore.initCardDeck(10);
+};
+
+const cardList = computed(() =>
+  gameStarted.value ? cardDeckStore.matchedCards : cardDeckStore.cardList
+);
 </script>
 
 <template>
@@ -30,16 +48,15 @@ try {
       </v-alert>
     </v-slide-y-transition>
 
-    <GameOptions @start-game="startGame = true" v-if="!startGame" />
-
-    <ImagesGallery
-      :start-game="startGame"
-      :card-list="
-        startGame ? cardDeckStore.matchedCards : cardDeckStore.cardList
-      "
+    <GameOptions
+      v-if="!gameStarted"
+      @start-game="startGame"
+      @refetch-images="refetchImages"
     />
 
-    <CardDeck v-if="startGame" :images-count="imagesCount" />
+    <ImagesGallery :game-started="gameStarted" :card-list="cardList" />
+
+    <CardDeck v-if="gameStarted" :images-count="imagesCount" />
   </main>
 </template>
 

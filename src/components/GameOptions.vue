@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineEmits(['startGame']);
+defineEmits(['startGame', 'refetchImages']);
 </script>
 
 <template>
@@ -23,6 +23,7 @@ defineEmits(['startGame']);
         color="indigo-lighten-3"
         v-bind="props"
         :elevation="isHovering ? 8 : 5"
+        @click="$emit('refetchImages')"
       />
     </div>
   </v-hover>
