@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRefs } from 'vue';
 
-defineEmits(['restartGame', 'startGame', 'refetchImages']);
+defineEmits(['newGame', 'restartGame', 'startGame', 'refetchImages']);
 
 const props = defineProps<{ gameStarted: boolean }>();
 const { gameStarted } = toRefs(props);
@@ -17,11 +17,25 @@ const { gameStarted } = toRefs(props);
         height="3rem"
         v-bind="props"
         :elevation="isHovering ? 8 : 5"
+        @click="$emit('newGame')"
+      >
+        <v-icon class="mr-1">mdi-autorenew</v-icon>
+        New Game
+      </v-btn>
+
+      <v-btn
+        v-if="gameStarted"
+        class="mx-auto"
+        color="indigo-lighten-1 text-h6"
+        height="3rem"
+        v-bind="props"
+        :elevation="isHovering ? 8 : 5"
         @click="$emit('restartGame')"
       >
         <v-icon class="mr-1">mdi-reload</v-icon>
         Restart Game
       </v-btn>
+
       <v-btn
         v-if="!gameStarted"
         class="mx-auto"
@@ -34,6 +48,7 @@ const { gameStarted } = toRefs(props);
         <v-icon class="mr-1">mdi-play-circle</v-icon>
         Start Game
       </v-btn>
+
       <v-btn
         v-if="!gameStarted"
         title="Generate new cards"

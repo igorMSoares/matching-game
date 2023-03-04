@@ -27,6 +27,11 @@ const startGame = () => {
 
 const restartGame = () => cardDeckStore.clearMatches();
 
+const newGame = () => {
+  cardDeckStore.clearMatches();
+  gameStarted.value = false;
+};
+
 const refetchImages = async () => {
   const cardImageStore = useCardImageStore();
 
@@ -65,6 +70,7 @@ const cardList = computed(() =>
       v-if="gameStarted"
       :game-started="gameStarted"
       @restart-game="restartGame"
+      @new-game="newGame"
     />
   </main>
 </template>
