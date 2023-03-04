@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
+import Loading from './components/Loading.vue';
 </script>
 
 <template>
@@ -14,14 +15,18 @@ import { RouterView } from 'vue-router';
 
     <v-main>
       <v-container class="main-container">
-        <Suspense>
-          <RouterView />
-          <template #fallback>
-            <h3>Loading Cards...</h3>
+        <RouterView v-slot="{ Component }">
+          <template v-if="Component">
+            <Suspense>
+              <component :is="Component" />
+              <template #fallback>
+                <Loading />
+              </template>
+            </Suspense>
           </template>
-        </Suspense>
-      </v-container></v-main
-    >
+        </RouterView>
+      </v-container>
+    </v-main>
   </v-app>
 </template>
 

@@ -46,7 +46,18 @@ onBeforeUpdate(() => {
                 cover
                 class="rounded"
                 @click="$emit('selectCard', card, { thumbnailClick: true })"
-              />
+              >
+                <template v-slot:placeholder>
+                  <div
+                    class="bg-indigo-lighten-4 d-flex align-center justify-center fill-height"
+                  >
+                    <v-progress-circular
+                      color="grey-lighten-4"
+                      indeterminate
+                    ></v-progress-circular>
+                  </div>
+                </template>
+              </v-img>
             </v-btn>
           </v-card>
         </v-hover>
