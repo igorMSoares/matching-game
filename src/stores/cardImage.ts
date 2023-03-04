@@ -50,7 +50,11 @@ export const useCardImageStore = defineStore('cardImageStore', () => {
   }
 
   async function reFetchImages(totalImages: number = 10) {
-    images.value = await fetchFromApi(`${API_ROUTE}?count=${totalImages}`);
+    try {
+      images.value = await fetchFromApi(`${API_ROUTE}?count=${totalImages}`);
+    } catch (error) {
+      throw new Error(error as string);
+    }
   }
 
   function duplicateImages() {
