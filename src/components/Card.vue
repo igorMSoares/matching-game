@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { toRefs } from 'vue';
 defineEmits(['selectCard']);
 
 const props = defineProps<{ card: Card }>();
-const { card } = props;
+const { card } = toRefs(props);
 </script>
 
 <template>

@@ -8,8 +8,8 @@ const selectCard = (cardId: number) => cardDeckStore.selectCard(cardId);
 </script>
 
 <template>
-  <v-row v-if="cardDeckStore.totalCards > 0" class="deck justify-center">
-    <v-col v-for="card in cardDeckStore.deck">
+  <v-row v-if="cardDeckStore.totalCards > 0" class="deck justify-center my-5">
+    <v-col v-for="card in cardDeckStore.deck" :key="`card-${card.id}`">
       <Card :card="card" @select-card="selectCard" />
     </v-col>
   </v-row>

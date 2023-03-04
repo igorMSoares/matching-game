@@ -25,6 +25,8 @@ const startGame = () => {
   gameStarted.value = true;
 };
 
+const restartGame = () => cardDeckStore.clearMatches();
+
 const refetchImages = async () => {
   const cardImageStore = useCardImageStore();
 
@@ -50,6 +52,7 @@ const cardList = computed(() =>
 
     <GameOptions
       v-if="!gameStarted"
+      :game-started="gameStarted"
       @start-game="startGame"
       @refetch-images="refetchImages"
     />
@@ -57,6 +60,12 @@ const cardList = computed(() =>
     <ImagesGallery :game-started="gameStarted" :card-list="cardList" />
 
     <CardDeck v-if="gameStarted" :images-count="imagesCount" />
+
+    <GameOptions
+      v-if="gameStarted"
+      :game-started="gameStarted"
+      @restart-game="restartGame"
+    />
   </main>
 </template>
 

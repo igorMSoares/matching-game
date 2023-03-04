@@ -66,6 +66,21 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
     cardList.value = [];
   };
 
+  const clearMatches = () => {
+    const selectedCardStore = useSelectedCardStore();
+    selectedCardStore.clear();
+
+    deck.value.forEach((card) => {
+      card.foundMatch = false;
+      card.isSelected = false;
+    });
+
+    matchedCardsId.value = [];
+
+    deck.value = shuffleArray(deck.value);
+    deck.value.forEach((card, i) => (card.id = i));
+  };
+
   const initCardDeck = async (imagesCount: number) => {
     const cardImagesStore = useCardImageStore();
 
@@ -93,5 +108,6 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
     matchFound,
     lastMatch,
     matchedCards,
+    clearMatches,
   };
 });
