@@ -75,6 +75,20 @@ const cardList = computed(() =>
       @refetch-images="refetchImages"
     />
 
+    <v-alert
+      v-if="!gameStarted && !loadingImages"
+      color="brown-darken-4"
+      variant="text"
+      text="Some Astronomy Picture of the Day for you to match"
+      class="mx-auto w-75 text-center text-h6"
+      prominent
+    >
+      <br />
+      <span class="text-subtitle-1">
+        Click <v-icon icon="mdi-restart" /> to generate new images
+      </span>
+    </v-alert>
+
     <ImagesGallery
       v-if="!loadingImages"
       :game-started="gameStarted"
