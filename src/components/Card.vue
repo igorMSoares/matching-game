@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { toRefs } from 'vue';
+
 defineEmits(['selectCard']);
 
 const props = defineProps<{ card: Card }>();
@@ -15,8 +16,10 @@ const { card } = toRefs(props);
       :id="card.key + `_${card.id}`"
       class="card"
       :class="{
-        'gradient-background': !card.foundMatch,
+        'card-background': !card.foundMatch,
         pointer: !card.isSelected && !card.foundMatch,
+        'no-border': !card.foundMatch && card.isSelected,
+        'bg-filter': card.foundMatch || !card.isSelected,
       }"
       @click.stop="$emit('selectCard', card.id)"
       role="button"
@@ -48,15 +51,29 @@ const { card } = toRefs(props);
   aspect-ratio: 1;
   background: transparent;
   overflow: hidden;
+  border: 0.4rem solid rgb(255, 255, 255);
 }
 
-.gradient-background {
-  background: rgb(57, 214, 154);
-  background: linear-gradient(
-    324deg,
-    rgba(57, 214, 154, 1) 0%,
-    rgba(60, 3, 48, 1) 78%
-  );
+.no-border {
+  border: none;
+}
+
+.card-background {
+  /* background: url('https://svgsilh.com/svg/1837442.svg') no-repeat,
+    rgb(70, 83, 87);
+  background-position: center;
+  background-size: 200%; */
+
+  background: url('https://svgsilh.com/svg_v2/2501275.svg') no-repeat,
+    rgb(70, 83, 87);
+  background-position: center bottom;
+  background-size: 120%;
+
+  background-blend-mode: soft-light;
+}
+
+.bg-filter {
+  filter: brightness(1.1) saturate(4);
 }
 
 .pointer {
