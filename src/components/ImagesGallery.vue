@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRefs } from 'vue';
+import { ref, toRefs, watch } from 'vue';
 import ImagesCarousel from './ImagesCarousel.vue';
 import GalleryThumbs from './GalleryThumbs.vue';
 
@@ -13,9 +13,20 @@ const selectedCard = ref<Card | null>(null);
 const showDetails = ref<boolean>(false);
 const displayMsg = ref<boolean>(false);
 
+watch(gameStarted, (_, newGame) => {
+  if (newGame) showDetails.value = false;
+});
+
+watch(cardList, (now, _) => {
+  if (now.length === 0) {
+    // game was restarted
+    showDetails.value = false;
+  }
+});
+
 const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
   selectedCard.value = card;
-  if (!gameStarted.value) {
+  if (!gameStarted.value && opts.thumbnailClick) {
     displayMsg.value = true;
     setTimeout(() => (displayMsg.value = false), 3500);
   } else if (!showDetails.value && opts.thumbnailClick)
@@ -49,6 +60,7 @@ const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
     @select-card="(card, opts) => showCardImage(card, opts)"
     class="my-5"
   />
+  {{ showDetails }}
 </template>
 
 <style scoped></style>
