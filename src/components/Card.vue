@@ -19,7 +19,6 @@ const { card } = toRefs(props);
         'card-background': !card.foundMatch,
         pointer: !card.isSelected && !card.foundMatch,
         'no-border': !card.foundMatch && card.isSelected,
-        'bg-filter': card.foundMatch || !card.isSelected,
       }"
       @click.stop="$emit('selectCard', card.id)"
       role="button"
@@ -33,6 +32,7 @@ const { card } = toRefs(props);
         cover
         loading="lazy"
       />
+      <v-img :src="'/planet-icon.png'" class="w-75 ma-auto h-100" />
     </v-card>
   </v-hover>
 </template>
@@ -59,21 +59,7 @@ const { card } = toRefs(props);
 }
 
 .card-background {
-  /* background: url('https://svgsilh.com/svg/1837442.svg') no-repeat,
-    rgb(70, 83, 87);
-  background-position: center;
-  background-size: 200%; */
-
-  background: url('https://svgsilh.com/svg_v2/2501275.svg') no-repeat,
-    rgb(70, 83, 87);
-  background-position: center bottom;
-  background-size: 120%;
-
-  background-blend-mode: soft-light;
-}
-
-.bg-filter {
-  filter: brightness(1.1) saturate(4);
+  background-color: #073248;
 }
 
 .pointer {
