@@ -4,10 +4,11 @@ import { onBeforeUpdate } from 'vue';
 
 const emit = defineEmits(['selectCard']);
 
-const { cardList, thumbnailSize, thumbnailMargins } = defineProps<{
+const { cardList, thumbnailSize, thumbnailMargins, className } = defineProps<{
   cardList: Card[];
   thumbnailSize: string;
   thumbnailMargins: number;
+  className: string;
 }>();
 const THUMB_SIZE_FALLBACK = '5rem';
 
@@ -23,7 +24,10 @@ onBeforeUpdate(() => {
 </script>
 
 <template>
-  <v-container class="elevation-8 rounded-lg mb-6 pa-0 bg-blue-grey-lighten-5">
+  <v-container
+    class="elevation-8 rounded-lg mb-6 pa-0 bg-amber-lighten-2"
+    :class="className"
+  >
     <v-row justify="center" class="pa-2" dense>
       <v-col
         v-for="card of cardList"
@@ -49,10 +53,10 @@ onBeforeUpdate(() => {
               >
                 <template v-slot:placeholder>
                   <div
-                    class="bg-indigo-lighten-4 d-flex align-center justify-center fill-height"
+                    class="bg-amber-lighten-4 d-flex align-center justify-center fill-height"
                   >
                     <v-progress-circular
-                      color="grey-lighten-4"
+                      color="brown-darken-4"
                       indeterminate
                     ></v-progress-circular>
                   </div>
@@ -70,5 +74,13 @@ onBeforeUpdate(() => {
 .v-card {
   --v-shadow-key-umbra-opacity: rgba(0, 0, 0, 0.5);
   --v-shadow-key-penumbra-opacity: rgba(0, 0, 0, 0.3);
+}
+
+.bg-blue {
+  background-color: #073248 !important;
+}
+
+.bg-blue .v-card {
+  border: 0.125rem solid #fff;
 }
 </style>

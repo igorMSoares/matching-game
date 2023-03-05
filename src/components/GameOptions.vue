@@ -10,13 +10,13 @@ const { gameStarted } = toRefs(props);
 <template>
   <v-hover v-slot="{ isHovering, props }">
     <div
-      class="d-flex justify-center align-center"
+      class="icons-wrapper d-flex justify-center align-center"
       :class="!gameStarted ? 'flex-column' : ''"
     >
       <v-btn
         v-if="gameStarted"
-        class="mx-auto"
-        color="indigo-lighten-1 text-h6"
+        class="ma-auto text-h6 text-brown-darken-4 w-xs-100"
+        color="amber-accent-3"
         height="3rem"
         v-bind="props"
         :elevation="isHovering ? 8 : 5"
@@ -28,8 +28,8 @@ const { gameStarted } = toRefs(props);
 
       <v-btn
         v-if="gameStarted"
-        class="mx-auto"
-        color="indigo-lighten-1 text-h6"
+        class="ma-auto text-h6 text-brown-darken-4"
+        color="amber-accent-3"
         height="3rem"
         v-bind="props"
         :elevation="isHovering ? 8 : 5"
@@ -43,8 +43,8 @@ const { gameStarted } = toRefs(props);
         v-if="!gameStarted"
         title="Generate new cards"
         icon="mdi-restart"
-        class="my-3"
-        color="indigo-lighten-3"
+        class="text-brown-darken-4 restart-icon"
+        color="amber-accent-1"
         v-bind="props"
         :elevation="isHovering ? 8 : 5"
         @click="$emit('refetchImages')"
@@ -52,8 +52,8 @@ const { gameStarted } = toRefs(props);
 
       <v-btn
         v-if="!gameStarted"
-        class="my-3"
-        color="indigo-lighten-1 text-h6"
+        class="ma-3 text-h6 text-brown-darken-4"
+        color="amber-accent-3"
         height="3rem"
         v-bind="props"
         :elevation="isHovering ? 8 : 5"
@@ -66,4 +66,13 @@ const { gameStarted } = toRefs(props);
   </v-hover>
 </template>
 
-<style scoped></style>
+<style scoped>
+.icons-wrapper {
+  position: relative;
+  gap: 1rem;
+}
+.restart-icon {
+  position: absolute;
+  right: 3%;
+}
+</style>

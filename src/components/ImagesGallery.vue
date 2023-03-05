@@ -58,6 +58,7 @@ const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
       :card-list="cardList"
       :thumbnail-size="gameStarted ? '5rem' : '15rem'"
       :thumbnail-margins="gameStarted ? 1 : 3"
+      :class-name="!gameStarted ? 'bg-blue' : ''"
       @select-card="(card, opts) => showCardImage(card, opts)"
       class="my-5"
     />

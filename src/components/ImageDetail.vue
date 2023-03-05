@@ -10,7 +10,7 @@ const { image } = defineProps<{ image: APODImg }>();
 <template>
   <v-card
     v-if="image"
-    class="image-display d-flex flex-column justify-center align-center px-6 py-6 bg-blue-grey-lighten-5"
+    class="image-display d-flex flex-column justify-center align-center px-6 py-6 bg-amber-lighten-3 text-brown-darken-4 rounded-lg"
     :class="smAndDown ? 'pb-13' : ''"
   >
     <v-card-title class="text-center pb-4"
