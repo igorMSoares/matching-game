@@ -68,18 +68,11 @@ const cardList = computed(() =>
       </v-alert>
     </v-slide-y-transition>
 
-    <GameOptions
-      v-if="!gameStarted && !loadingImages"
-      :game-started="gameStarted"
-      @start-game="startGame"
-      @refetch-images="refetchImages"
-    />
-
     <v-alert
       v-if="!gameStarted && !loadingImages"
       color="brown-darken-4"
       variant="text"
-      text="Some Astronomy Picture of the Day for you to match"
+      text="Start the game and find the matching cards to see the entire image along with its description"
       class="mx-auto w-75 text-center text-h6"
       prominent
     >
@@ -88,6 +81,13 @@ const cardList = computed(() =>
         Click <v-icon icon="mdi-restart" /> to generate new images
       </span>
     </v-alert>
+
+    <GameOptions
+      v-if="!gameStarted && !loadingImages"
+      :game-started="gameStarted"
+      @start-game="startGame"
+      @refetch-images="refetchImages"
+    />
 
     <ImagesGallery
       v-if="!loadingImages"
