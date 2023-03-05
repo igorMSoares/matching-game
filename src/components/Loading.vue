@@ -9,13 +9,14 @@ const { text } = withDefaults(defineProps<Props>(), {
 
 <template>
   <v-alert
+    color="brown-darken-4"
     :text="text"
     icon="mdi-alien-outline"
     variant="text"
     class="w-50 my-5 mx-auto"
     prominent
   >
-    <v-progress-linear indeterminate :height="6"></v-progress-linear>
+    <v-progress-linear indeterminate :height="6" color="brown-darken-4" />
   </v-alert>
 </template>
 
