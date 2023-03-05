@@ -11,10 +11,10 @@ const { selectedCard } = defineProps<{ selectedCard: Card | null }>();
 </script>
 
 <template>
-  <v-expand-transition origin="bottom center" class="transition-wrapper">
+  <v-expand-transition origin="bottom center">
     <v-carousel
       v-if="cardDeckStore.matchedCards.length > 0"
-      class="carousel mb-6 elevation-8"
+      class="carousel mb-6"
       :show-arrows="'hover' && mdAndUp"
       hide-delimiter-background
       :hide-delimiters="mdAndUp"
