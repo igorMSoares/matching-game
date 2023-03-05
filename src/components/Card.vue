@@ -7,29 +7,31 @@ const { card } = toRefs(props);
 </script>
 
 <template>
-  <v-card
-    v-if="!card.foundMatch"
-    :elevation="4"
-    :loading="true"
-    :id="card.key + `_${card.id}`"
-    class="card"
-    :class="{
-      'gradient-background': !card.foundMatch,
-      pointer: !card.isSelected && !card.foundMatch,
-    }"
-    @click.stop="$emit('selectCard', card.id)"
-    role="button"
-  >
-    <v-img
-      v-show="!card.foundMatch && card.isSelected"
-      :src="card.image.url"
-      :alt="card.image.title"
-      :title="card.image.title"
-      :aspect-ratio="1"
-      cover
-      loading="lazy"
-    />
-  </v-card>
+  <v-hover v-slot="{ isHovering, props }">
+    <v-card
+      v-if="!card.foundMatch"
+      v-bind="props"
+      :elevation="isHovering ? 12 : 8"
+      :id="card.key + `_${card.id}`"
+      class="card"
+      :class="{
+        'gradient-background': !card.foundMatch,
+        pointer: !card.isSelected && !card.foundMatch,
+      }"
+      @click.stop="$emit('selectCard', card.id)"
+      role="button"
+    >
+      <v-img
+        v-show="!card.foundMatch && card.isSelected"
+        :src="card.image.url"
+        :alt="card.image.title"
+        :title="card.image.title"
+        :aspect-ratio="1"
+        cover
+        loading="lazy"
+      />
+    </v-card>
+  </v-hover>
 </template>
 
 <style scoped>
@@ -59,5 +61,10 @@ const { card } = toRefs(props);
 
 .pointer {
   cursor: pointer;
+}
+
+.v-card {
+  --v-shadow-key-umbra-opacity: rgba(0, 0, 0, 0.5);
+  --v-shadow-key-penumbra-opacity: rgba(0, 0, 0, 0.3);
 }
 </style>
