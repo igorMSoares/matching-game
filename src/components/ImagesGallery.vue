@@ -60,7 +60,6 @@ const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
     @select-card="(card, opts) => showCardImage(card, opts)"
     class="my-5"
   />
-  {{ showDetails }}
 </template>
 
 <style scoped></style>
