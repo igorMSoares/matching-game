@@ -14,16 +14,22 @@ const loadingImages = ref(false);
 
 const cardDeckStore = useCardDeckStore();
 
-if (cardDeckStore.totalCards === 0) {
+const apiRequest = async (asyncReqHandler: Function) => {
   try {
     loadingImages.value = true;
-    await cardDeckStore.initCardDeck(imagesCount.value);
+    await asyncReqHandler();
     loadingImages.value = false;
   } catch (error) {
     const DEFAULT_ERROR_MSG = 'Error while fetching from the APOD API';
     err.value = error instanceof Error ? error.message : DEFAULT_ERROR_MSG;
     console.error(err.value);
   }
+};
+
+if (cardDeckStore.totalCards === 0) {
+  await apiRequest(async () => {
+    await cardDeckStore.initCardDeck(imagesCount.value);
+  });
 }
 
 const startGame = () => {
@@ -38,18 +44,12 @@ const newGame = () => {
 };
 
 const refetchImages = async () => {
-  try {
+  await apiRequest(async () => {
     const cardImageStore = useCardImageStore();
 
-    loadingImages.value = true;
     await cardImageStore.reFetchImages();
-    loadingImages.value = false;
     cardDeckStore.initCardDeck(10);
-  } catch (error) {
-    const DEFAULT_ERROR_MSG = 'Error while fetching from the APOD API';
-    err.value = error instanceof Error ? error.message : DEFAULT_ERROR_MSG;
-    console.error(err.value);
-  }
+  });
 };
 
 const cardList = computed(() =>
