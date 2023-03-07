@@ -45,6 +45,7 @@ const showCardImage = (card: Card, opts = { thumbnailClick: false }) => {
     <v-alert
       v-if="!gameStarted"
       v-model="displayMsg"
+      color="amber-lighten-3"
       type="info"
       :text="'Start the game and find the match of this card to see its full image and description.'"
       closable
