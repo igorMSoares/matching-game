@@ -82,19 +82,21 @@ const cardList = computed(() =>
       </span>
     </v-alert>
 
-    <GameOptions
-      v-if="!gameStarted && !loadingImages"
-      :game-started="gameStarted"
-      @start-game="startGame"
-      @refetch-images="refetchImages"
-    />
+    <v-container>
+      <GameOptions
+        v-if="!gameStarted && !loadingImages"
+        :game-started="gameStarted"
+        @start-game="startGame"
+        @refetch-images="refetchImages"
+      />
 
-    <ImagesGallery
-      v-if="!loadingImages"
-      :game-started="gameStarted"
-      :card-list="cardList"
-    />
-    <Loading v-else-if="!err" />
+      <ImagesGallery
+        v-if="!loadingImages"
+        :game-started="gameStarted"
+        :card-list="cardList"
+      />
+      <Loading v-else-if="!err" />
+    </v-container>
 
     <CardDeck v-if="gameStarted" :images-count="imagesCount" />
 
