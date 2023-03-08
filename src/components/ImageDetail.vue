@@ -14,7 +14,7 @@ const { image } = defineProps<{ image: APODImg }>();
     :class="smAndDown ? 'pb-13' : ''"
   >
     <v-card-title class="text-center pb-4"
-      ><h2>{{ image.title }}</h2></v-card-title
+      ><h2 class="title">{{ image.title }}</h2></v-card-title
     >
     <v-img
       :src="image.url"
@@ -41,6 +41,10 @@ const { image } = defineProps<{ image: APODImg }>();
 .image {
   flex-grow: 0;
   max-height: 65%;
+}
+
+.title {
+  font-size: clamp(1rem, 4vw, 2rem);
 }
 
 .explanation {
