@@ -23,7 +23,9 @@ const { image } = defineProps<{ image: APODImg }>();
       class="image"
       eager
     />
-    <v-card-text class="explanation text-justify overflow-x-auto pt-0 mt-4">
+    <v-card-text
+      class="explanation text-justify overflow-x-auto pt-0 mt-4 w-100"
+    >
       <p>
         {{ image.explanation }}
       </p>
@@ -47,6 +49,6 @@ const { image } = defineProps<{ image: APODImg }>();
   line-height: 1.25em;
   flex-grow: 0;
   max-width: 90ch;
-  min-width: 38ch;
+  min-width: 36ch;
 }
 </style>
