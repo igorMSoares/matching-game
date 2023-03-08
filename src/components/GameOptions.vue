@@ -24,18 +24,14 @@ const { gameStarted } = toRefs(props);
       @click="$emit('restartGame')"
     />
 
-    <v-hover v-slot="{ isHovering, props }">
-      <v-btn
+    <div class="restart-icon">
+      <OptionsBtn
         v-if="!gameStarted"
-        title="Generate new cards"
-        icon="mdi-restart"
-        :class="`text-brow-darken-4 restart-icon`"
-        color="amber-accent-1"
-        v-bind="props"
-        :elevation="isHovering ? 8 : 5"
+        :iconName="'mdi-restart'"
+        :title="'Generate new cards'"
         @click="$emit('refetchImages')"
       />
-    </v-hover>
+    </div>
 
     <OptionsBtn
       v-if="!gameStarted"
