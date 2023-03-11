@@ -18,9 +18,7 @@ const carouselHeight = 'max(37rem, 80vh)';
       v-if="cardDeckStore.matchedCards.length > 0"
       class="carousel mb-6"
       :show-arrows="'hover' && mdAndUp"
-      hide-delimiter-background
-      :hide-delimiters="mdAndUp"
-      delimiter-icon="mdi-image"
+      :hide-delimiters="true"
       :model-value="selectedCard?.key"
       height="carouselHeight"
     >

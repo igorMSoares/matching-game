@@ -14,7 +14,6 @@ const { image, height } = defineProps<{
   <v-card
     v-if="image"
     class="image-display d-flex flex-column justify-center align-center px-6 py-6 bg-amber-lighten-3 text-brown-darken-4 rounded-lg"
-    :class="smAndDown ? 'pb-13' : ''"
   >
     <v-card-title class="text-center pb-4"
       ><h2 class="title">{{ image.title }}</h2></v-card-title
