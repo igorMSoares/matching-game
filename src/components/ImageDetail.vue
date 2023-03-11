@@ -4,7 +4,10 @@ import { useDisplay } from 'vuetify';
 
 const { smAndDown } = useDisplay();
 
-const { image } = defineProps<{ image: APODImg }>();
+const { image, height } = defineProps<{
+  image: APODImg;
+  height: string;
+}>();
 </script>
 
 <template>
@@ -35,7 +38,7 @@ const { image } = defineProps<{ image: APODImg }>();
 
 <style scoped>
 .image-display {
-  height: 80vh;
+  height: v-bind(height);
 }
 
 .image {

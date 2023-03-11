@@ -8,6 +8,8 @@ const cardDeckStore = useCardDeckStore();
 const { mdAndUp } = useDisplay();
 
 const { selectedCard } = defineProps<{ selectedCard: Card | null }>();
+
+const carouselHeight = 'max(37rem, 80vh)';
 </script>
 
 <template>
@@ -20,7 +22,7 @@ const { selectedCard } = defineProps<{ selectedCard: Card | null }>();
       :hide-delimiters="mdAndUp"
       delimiter-icon="mdi-image"
       :model-value="selectedCard?.key"
-      height="80vh"
+      height="carouselHeight"
     >
       <v-btn
         class="close-icon"
@@ -34,7 +36,7 @@ const { selectedCard } = defineProps<{ selectedCard: Card | null }>();
         :key="matchedCard.key"
         :value="matchedCard.key"
       >
-        <ImageDetail :image="matchedCard.image" />
+        <ImageDetail :image="matchedCard.image" :height="carouselHeight" />
       </v-carousel-item>
     </v-carousel>
   </v-expand-transition>
