@@ -45,6 +45,8 @@ const { image } = defineProps<{ image: APODImg }>();
 
 .title {
   font-size: clamp(1rem, 4vw, 2rem);
+  white-space: break-spaces;
+  line-height: 1.25em;
 }
 
 .explanation {
