@@ -5,6 +5,14 @@ import { useCardDeckStore } from '@/stores/cardDeck';
 const cardDeckStore = useCardDeckStore();
 
 const selectCard = (cardId: number) => cardDeckStore.selectCard(cardId);
+
+const totalCards = cardDeckStore.totalCards;
+const cardSidePercent =
+  totalCards > 35 && totalCards < 40
+    ? '14.25%'
+    : totalCards > 40
+    ? '12%'
+    : '30%';
 </script>
 
 <template>
@@ -17,8 +25,9 @@ const selectCard = (cardId: number) => cardDeckStore.selectCard(cardId);
 
 <style scoped>
 .deck {
+  --percentage: v-bind(cardSidePercent);
   --square-min-side: 5.75rem;
-  --square-side: clamp(var(--square-min-side), 30%, 13rem);
+  --square-side: clamp(var(--square-min-side), var(--percentage), 13rem);
   display: grid;
   grid-template-columns: repeat(auto-fill, var(--square-side));
   justify-items: center;
