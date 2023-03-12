@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useDisplay } from 'vuetify';
 import MenuList from './MenuList.vue';
 
 type MenuItem = { value: number; title: string };
@@ -6,6 +7,8 @@ type MenuItem = { value: number; title: string };
 defineEmits(['generateImages']);
 
 const { activatorSelector } = defineProps<{ activatorSelector: string }>();
+
+const { mdAndDown } = useDisplay();
 
 const values = [5, 10, 12, 15, 18, 20, 22, 25];
 const items: MenuItem[] = values.map((value) => {
@@ -16,7 +19,7 @@ const items: MenuItem[] = values.map((value) => {
 <template>
   <v-menu
     :activator="activatorSelector"
-    location="end"
+    :location="mdAndDown ? 'start' : 'end'"
     transition="scale-transition"
     :attach="activatorSelector"
     open-on-hover
