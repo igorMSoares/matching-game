@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { toRefs } from 'vue';
 import OptionsBtn from './OptionsBtn.vue';
+import NewCardsMenu from './NewCardsMenu.vue';
 
 defineEmits(['newGame', 'restartGame', 'startGame', 'refetchImages']);
 
@@ -24,13 +25,8 @@ const { gameStarted } = toRefs(props);
       @click="$emit('restartGame')"
     />
 
-    <div class="restart-icon">
-      <OptionsBtn
-        v-if="!gameStarted"
-        :iconName="'mdi-restart'"
-        :title="'Generate new cards'"
-        @click="$emit('refetchImages')"
-      />
+    <div id="new-cards-btn" class="restart-icon" v-if="!gameStarted">
+      <OptionsBtn :iconName="'mdi-restart'" />
     </div>
 
     <OptionsBtn
@@ -40,6 +36,7 @@ const { gameStarted } = toRefs(props);
       @click="$emit('startGame')"
     />
   </div>
+  <NewCardsMenu :activatorSelector="'#new-cards-btn'" />
 </template>
 
 <style scoped>
