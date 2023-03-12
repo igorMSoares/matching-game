@@ -84,7 +84,7 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
   const initCardDeck = async (imagesCount: number) => {
     const cardImagesStore = useCardImageStore();
 
-    await cardImagesStore.fetchImages();
+    await cardImagesStore.fetchImages(imagesCount);
 
     clearStore();
 

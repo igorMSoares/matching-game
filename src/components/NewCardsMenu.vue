@@ -3,6 +3,8 @@ import MenuList from './MenuList.vue';
 
 type MenuItem = { value: number; title: string };
 
+defineEmits(['generateImages']);
+
 const { activatorSelector } = defineProps<{ activatorSelector: string }>();
 
 const values = [5, 10, 12, 15, 18, 20, 22, 25];
@@ -19,7 +21,12 @@ const items: MenuItem[] = values.map((value) => {
     :attach="activatorSelector"
     open-on-hover
   >
-    <MenuList :items="items" />
+    <MenuList
+      :items="items"
+      @generate-images="
+        (numberOfImages) => $emit('generateImages', numberOfImages)
+      "
+    />
   </v-menu>
 </template>
 

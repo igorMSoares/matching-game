@@ -36,7 +36,10 @@ const { gameStarted } = toRefs(props);
       @click="$emit('startGame')"
     />
   </div>
-  <NewCardsMenu :activatorSelector="'#new-cards-btn'" />
+  <NewCardsMenu
+    :activatorSelector="'#new-cards-btn'"
+    @generateImages="(quantity) => $emit('refetchImages', quantity)"
+  />
 </template>
 
 <style scoped>

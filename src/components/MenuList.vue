@@ -1,4 +1,6 @@
 <script setup lang="ts">
+defineEmits(['generateImages']);
+
 const { items } = defineProps<{
   items: Array<{ value: number; title: string }>;
 }>();
@@ -10,6 +12,7 @@ const { items } = defineProps<{
       v-for="(item, id) in items"
       :key="`menu-item__${id}`"
       :value="item.value"
+      @click="$emit('generateImages', item.value)"
     >
       <v-list-item-title class="text-button text-brown-darken-4">{{
         item.title

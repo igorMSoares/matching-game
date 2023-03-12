@@ -43,12 +43,12 @@ const newGame = () => {
   gameStarted.value = false;
 };
 
-const refetchImages = async () => {
+const refetchImages = async (quantity: number) => {
   await apiRequest(async () => {
     const cardImageStore = useCardImageStore();
 
-    await cardImageStore.reFetchImages();
-    cardDeckStore.initCardDeck(10);
+    await cardImageStore.reFetchImages(quantity);
+    cardDeckStore.initCardDeck(quantity);
   });
 };
 
@@ -87,7 +87,7 @@ const cardList = computed(() =>
         v-if="!gameStarted && !loadingImages"
         :game-started="gameStarted"
         @start-game="startGame"
-        @refetch-images="refetchImages"
+        @refetch-images="(quantity) => refetchImages(quantity)"
       />
 
       <ImagesGallery
