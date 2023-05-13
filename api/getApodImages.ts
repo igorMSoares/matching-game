@@ -19,15 +19,21 @@ interface APODImg extends APODData {
   media_type: 'image';
 }
 
+const redis = Redis.fromEnv();
+
 const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(6, '1 m'),
+  redis,
+  limiter: Ratelimit.slidingWindow(4, '1 m'), // max of 4 req/min per user
   analytics: true,
 });
 
 const api = axios.create({
   baseURL: APOD_BASE_URL,
 });
+
+const API_MAX_RATE_LIMIT = 2000;
+// API's rate limit should not go bellow
+const API_MIN_RATE_LIMIT = 50;
 
 const filterByMediaType = (
   dataList: APODData[],
@@ -50,11 +56,14 @@ const filterByMediaType = (
 export default async (req: VercelRequest, res: VercelResponse) => {
   const count = Number(req.query.count ?? 10);
   const identifier = (req.headers['x-real-ip'] as string) ?? '127.0.0.1';
-  const { success: bellowRateLimit } = await ratelimit.limit(identifier);
+  const { success: userAboveRateLimit } = await ratelimit.limit(identifier);
+  const apodRemainingRatelimit =
+    Number(await redis.get('apod-remaining-ratelimit')) ?? API_MAX_RATE_LIMIT;
 
-  if (!bellowRateLimit) {
-    console.log('Too many requests per minute.');
-    return res.json('Too many requests per minute.');
+  if (!userAboveRateLimit || apodRemainingRatelimit <= API_MIN_RATE_LIMIT) {
+    return res.status(429).send({
+      error: `Too many sequential requests. Please try again in a couple of minutes.`,
+    });
   }
 
   try {
@@ -62,12 +71,22 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       `/apod?${APOD_KEY_NAME}=${APOD_API_KEY}&count=${Math.floor(1.5 * count)}`
     );
 
+    await redis.set(
+      'apod-remaining-ratelimit',
+      apiRes.headers['x-ratelimit-remaining']
+    );
+
     const images = filterByMediaType(apiRes.data, 'image', count) as APODImg[];
 
-    res.status(200);
-    return res.json(images);
-  } catch (_) {
-    res.status(500);
-    return res.json('Could not fetch images from Nasa API');
+    return res.status(200).send(images);
+  } catch (error: unknown) {
+    const statusCode = axios.isAxiosError(error) ? error.status ?? 500 : 500;
+
+    return res.status(statusCode).send({
+      error: `
+        Houston, we have a problem.
+        Please try again in a couple of minutes.
+      `,
+    });
   }
 };
