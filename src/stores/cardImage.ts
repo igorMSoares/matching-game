@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { readFromCache, writeToCache } from '@/helpers/cache';
 
 const API_ROUTE = Object.freeze('/api/getApodImages');
@@ -8,22 +8,25 @@ const API_ROUTE = Object.freeze('/api/getApodImages');
 const fetchFromApi = async (url: string) => {
   try {
     const apiRes = await axios.get(url);
-    if ('error' in apiRes.data) {
-      throw new Error(apiRes.data.error as string);
-    }
 
     const imgs = apiRes.data as APODImg[];
     writeToCache(url, imgs);
 
     return imgs;
-  } catch (error) {
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new AxiosError(
+        `${error.response?.data.error} (Error: ${error.response?.status})`
+      );
+    }
+
     throw new Error(error as string);
   }
 };
 
 const preloadImgs = (imgs: APODImg[]) => {
   let preloadLink;
-  imgs.forEach((img) => {
+  imgs.forEach(img => {
     preloadLink = document.createElement('link');
     preloadLink.rel = 'preload';
     preloadLink.as = 'image';
@@ -52,8 +55,8 @@ export const useCardImageStore = defineStore('cardImageStore', () => {
   async function reFetchImages(totalImages: number = 10) {
     try {
       images.value = await fetchFromApi(`${API_ROUTE}?count=${totalImages}`);
-    } catch (error) {
-      throw new Error(error as string);
+    } catch (error: unknown) {
+      throw axios.isAxiosError(error) ? error : new Error(error as string);
     }
   }
 
