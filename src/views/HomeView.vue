@@ -73,9 +73,14 @@ const cardList = computed(() =>
       </v-alert>
     </v-slide-y-transition>
 
-    <v-alert v-if="!gameStarted && !loadingImages" color="brown-darken-4" variant="text"
+    <v-alert
+      v-if="!gameStarted && !loadingImages"
+      color="brown-darken-4"
+      variant="text"
       text="Start the game and find the matching cards to see the entire image along with its description"
-      class="mx-auto w-75 text-center text-h6" prominent>
+      class="mx-auto w-75 text-center text-h6"
+      prominent
+    >
       <br />
       <span class="text-subtitle-1">
         Click <v-icon icon="mdi-restart" /> to generate new images
@@ -83,16 +88,29 @@ const cardList = computed(() =>
     </v-alert>
 
     <v-container>
-      <GameOptions v-if="!gameStarted && !loadingImages" :game-started="gameStarted" @start-game="startGame"
-        @refetch-images="quantity => refetchImages(quantity)" />
+      <GameOptions
+        v-if="!gameStarted && !loadingImages"
+        :game-started="gameStarted"
+        @start-game="startGame"
+        @refetch-images="quantity => refetchImages(quantity)"
+      />
 
-      <ImagesGallery v-if="!loadingImages" :game-started="gameStarted" :card-list="cardList" />
+      <ImagesGallery
+        v-if="!loadingImages"
+        :game-started="gameStarted"
+        :card-list="cardList"
+      />
       <Loading v-else-if="!err" />
     </v-container>
 
     <CardDeck v-if="gameStarted" :images-count="imagesCount" />
 
-    <GameOptions v-if="gameStarted" :game-started="gameStarted" @restart-game="restartGame" @new-game="newGame" />
+    <GameOptions
+      v-if="gameStarted"
+      :game-started="gameStarted"
+      @restart-game="restartGame"
+      @new-game="newGame"
+    />
   </main>
 </template>
 
