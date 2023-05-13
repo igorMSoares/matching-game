@@ -1,4 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 import axios from 'axios';
 
 const { APOD_BASE_URL, APOD_KEY_NAME, APOD_API_KEY } = process.env;
@@ -16,6 +18,12 @@ type APODData = {
 interface APODImg extends APODData {
   media_type: 'image';
 }
+
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(6, '1 m'),
+  analytics: true,
+});
 
 const api = axios.create({
   baseURL: APOD_BASE_URL,
@@ -41,6 +49,14 @@ const filterByMediaType = (
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const count = Number(req.query.count ?? 10);
+  const identifier = (req.headers['x-real-ip'] as string) ?? '127.0.0.1';
+  const { success: bellowRateLimit } = await ratelimit.limit(identifier);
+
+  if (!bellowRateLimit) {
+    console.log('Too many requests per minute.');
+    return res.json('Too many requests per minute.');
+  }
+
   try {
     const apiRes = await api.get(
       `/apod?${APOD_KEY_NAME}=${APOD_API_KEY}&count=${Math.floor(1.5 * count)}`
