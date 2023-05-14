@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { readFromCache, writeToCache } from '@/helpers/cache';
+import { isApiError } from '@/helpers/api';
 
 const API_ROUTE = Object.freeze('/api/getApodImages');
 
@@ -14,14 +15,20 @@ const fetchFromApi = async (url: string) => {
 
     return imgs;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      throw new AxiosError(
-        `${error.response?.data.error} (Error: ${error.response?.status})`,
-        error.response?.status.toString()
-      );
-    }
+    const apiError: ApiError = axios.isAxiosError(error)
+      ? {
+        code: error.response?.status.toString() ?? '500',
+        message: `${error.response?.data.error} (Error: ${error.response?.status})`,
+      }
+      : {
+        code: '500',
+        message: `
+          Houston we have a problem: unable to fetch images from Nasa.
+          Please try again in a couple of minutes.
+        `,
+      };
 
-    throw new Error(error as string);
+    return apiError;
   }
 };
 
@@ -42,23 +49,22 @@ export const useCardImageStore = defineStore('cardImageStore', () => {
 
   async function fetchImages(totalImages: number = 10) {
     const url = `${API_ROUTE}?count=${totalImages}`;
-    let imgs = readFromCache(url) as APODImg[] | null;
+    let imgs = readFromCache(url) as APODImg[] | ApiError | null;
 
     if (imgs === null) {
       imgs = await fetchFromApi(url);
     }
 
-    preloadImgs(imgs);
+    if (!isApiError(imgs)) {
+      preloadImgs(imgs);
+      images.value = imgs;
+    }
 
-    images.value = imgs;
+    return imgs;
   }
 
   async function reFetchImages(totalImages: number = 10) {
-    try {
-      images.value = await fetchFromApi(`${API_ROUTE}?count=${totalImages}`);
-    } catch (error: unknown) {
-      throw axios.isAxiosError(error) ? error : new Error(error as string);
-    }
+    return await fetchFromApi(`${API_ROUTE}?count=${totalImages}`);
   }
 
   function duplicateImages() {

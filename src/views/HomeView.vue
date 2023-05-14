@@ -6,7 +6,7 @@ import GameOptions from '../components/GameOptions.vue';
 import Loading from '../components/Loading.vue';
 import { useCardDeckStore } from '@/stores/cardDeck';
 import { useCardImageStore } from '@/stores/cardImage';
-import { AxiosError } from 'axios';
+import { isApiError } from '@/helpers/api';
 
 const err = ref<string | null>(null);
 const tooManyRequests = ref<boolean>(false);
@@ -21,29 +21,23 @@ const apiRequest = async (asyncReqHandler: Function) => {
     loadingImages.value = true;
     await asyncReqHandler();
     loadingImages.value = false;
-  } catch (error: unknown) {
-    const DEFAULT_ERROR_MSG = `
-      Houston, we have a problem: unable to fetch images from Nasa. 
-      Please try again in a couple of minutes.
-    `;
-    err.value =
-      error instanceof Error || error instanceof AxiosError
-        ? error.message
-        : DEFAULT_ERROR_MSG;
+  } catch (error: any) {
+    if (!isApiError(error)) return;
 
-    const code = error instanceof AxiosError ? error.code : undefined;
+      const { code, message } = error;
+      err.value = message;
 
-    if (code === '429') {
-      tooManyRequests.value = true;
+      if (code === '429') {
+        tooManyRequests.value = true;
+        setTimeout(() => {
+          tooManyRequests.value = false;
+        }, 1000 * 60); // 1 minute timeout
+      }
+
+      loadingImages.value = false;
       setTimeout(() => {
-        tooManyRequests.value = false;
-      }, 1000 * 60); // 1 minute timeout
-    }
-
-    loadingImages.value = false;
-    setTimeout(() => {
-      err.value = '';
-    }, 3500);
+        err.value = '';
+      }, 3500);
   }
 };
 
@@ -68,7 +62,10 @@ const refetchImages = async (quantity: number) => {
   await apiRequest(async () => {
     const cardImageStore = useCardImageStore();
 
-    await cardImageStore.reFetchImages(quantity);
+    const res = await cardImageStore.reFetchImages(quantity);
+
+    if (isApiError(res)) throw res;
+
     cardDeckStore.initCardDeck(quantity);
   });
 };

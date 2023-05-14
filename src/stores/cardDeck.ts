@@ -4,6 +4,7 @@ import { computed, reactive, ref } from 'vue';
 import { useSelectedCardStore } from './selectedCard';
 import { useCardImageStore } from './cardImage';
 import { shuffleArray } from '@/helpers/shuffle';
+import { isApiError } from '@/helpers/api';
 
 export const useCardDeckStore = defineStore('cardDeckStore', () => {
   const deck = ref<Card[]>([]); // stores duplicated cards for the game
@@ -19,7 +20,7 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
 
   const matchedCardsId = ref<number[]>([]);
   const matchedCards = computed(() =>
-    matchedCardsId.value.map((cardId) => getCard(cardId))
+    matchedCardsId.value.map(cardId => getCard(cardId))
   );
 
   function addCard(image: APODImg, opts = { addToList: false }) {
@@ -70,7 +71,7 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
     const selectedCardStore = useSelectedCardStore();
     selectedCardStore.clear();
 
-    deck.value.forEach((card) => {
+    deck.value.forEach(card => {
       card.foundMatch = false;
       card.isSelected = false;
     });
@@ -84,17 +85,21 @@ export const useCardDeckStore = defineStore('cardDeckStore', () => {
   const initCardDeck = async (imagesCount: number) => {
     const cardImagesStore = useCardImageStore();
 
-    await cardImagesStore.fetchImages(imagesCount);
+    const res = await cardImagesStore.fetchImages(imagesCount);
+
+    if (isApiError(res)) {
+      throw res;
+    }
 
     clearStore();
 
-    cardImagesStore.images.forEach((img) => addCard(img, { addToList: true }));
+    cardImagesStore.images.forEach(img => addCard(img, { addToList: true }));
 
     const allImages: APODImg[] = shuffleArray(
       cardImagesStore.duplicateImages()
     );
 
-    allImages.forEach((img) => addCard(img));
+    allImages.forEach(img => addCard(img));
   };
 
   return {

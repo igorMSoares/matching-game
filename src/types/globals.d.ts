@@ -19,3 +19,8 @@ interface Card {
   isSelected: boolean;
   foundMatch: boolean;
 }
+
+type ApiError = {
+  code: string;
+  message: string;
+};
