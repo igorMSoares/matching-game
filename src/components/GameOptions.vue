@@ -5,8 +5,11 @@ import NewCardsMenu from './NewCardsMenu.vue';
 
 defineEmits(['newGame', 'restartGame', 'startGame', 'refetchImages']);
 
-const props = defineProps<{ gameStarted: boolean }>();
-const { gameStarted } = toRefs(props);
+const props = defineProps<{
+  gameStarted: boolean;
+  tooManyRequests?: boolean;
+}>();
+const { gameStarted, tooManyRequests } = toRefs(props);
 </script>
 
 <template>
@@ -25,7 +28,11 @@ const { gameStarted } = toRefs(props);
       @click="$emit('restartGame')"
     />
 
-    <div id="new-cards-btn" class="restart-icon" v-if="!gameStarted">
+    <div
+      id="new-cards-btn"
+      class="restart-icon"
+      v-if="!gameStarted && !tooManyRequests"
+    >
       <OptionsBtn :iconName="'mdi-restart'" />
     </div>
 
@@ -37,8 +44,9 @@ const { gameStarted } = toRefs(props);
     />
   </div>
   <NewCardsMenu
+      v-if="!gameStarted && !tooManyRequests"
     :activatorSelector="'#new-cards-btn'"
-    @generateImages="(quantity) => $emit('refetchImages', quantity)"
+    @generateImages="quantity => $emit('refetchImages', quantity)"
   />
 </template>
 

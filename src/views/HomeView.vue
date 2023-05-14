@@ -9,6 +9,7 @@ import { useCardImageStore } from '@/stores/cardImage';
 import { AxiosError } from 'axios';
 
 const err = ref<string | null>(null);
+const tooManyRequests = ref<boolean>(false);
 const imagesCount = ref(10);
 const gameStarted = ref(false);
 const loadingImages = ref(false);
@@ -29,6 +30,20 @@ const apiRequest = async (asyncReqHandler: Function) => {
       error instanceof Error || error instanceof AxiosError
         ? error.message
         : DEFAULT_ERROR_MSG;
+
+    const code = error instanceof AxiosError ? error.code : undefined;
+
+    if (code === '429') {
+      tooManyRequests.value = true;
+      setTimeout(() => {
+        tooManyRequests.value = false;
+      }, 1000 * 60); // 1 minute timeout
+    }
+
+    loadingImages.value = false;
+    setTimeout(() => {
+      err.value = '';
+    }, 3500);
   }
 };
 
@@ -91,6 +106,7 @@ const cardList = computed(() =>
       <GameOptions
         v-if="!gameStarted && !loadingImages"
         :game-started="gameStarted"
+        :too-many-requests="tooManyRequests"
         @start-game="startGame"
         @refetch-images="quantity => refetchImages(quantity)"
       />

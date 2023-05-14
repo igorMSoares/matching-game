@@ -16,7 +16,8 @@ const fetchFromApi = async (url: string) => {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw new AxiosError(
-        `${error.response?.data.error} (Error: ${error.response?.status})`
+        `${error.response?.data.error} (Error: ${error.response?.status})`,
+        error.response?.status.toString()
       );
     }
 
